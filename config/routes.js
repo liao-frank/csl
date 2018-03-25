@@ -7,6 +7,21 @@ class AppRouter extends BeanRouter {
 		this.get('/', 'home#redirect'); // add raw route
 
 		this.get('/dashboard', 'dashboard#dashboard');
-		
+
+
+		// prepare mongoDB
+		// const LOCAL_DB_URL = 'mongodb://localhost:27017';
+		const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
+		const MONGO_CLIENT = cli.require('mongodb').MongoClient;
+		global.mongoDB;
+
+		// Use connect method to connect to the MongoDB server
+		MONGO_CLIENT.connect(MLAB_URL, function(err, client) {
+			if (err) console.log(err);
+			else {
+				// global.mongoDB = client.db('test'); // Make reference to local db globally available.
+				global.mongoDB = client; // Make reference to external db globally available.
+			}
+		});
 	}
 }
