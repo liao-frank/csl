@@ -1,0 +1,40 @@
+<ul class="widget-list">
+	<widget
+		v-for="widget in widgets"
+		v-bind:widget="widget"
+		v-bind:edit_mode="edit_mode"
+		v-bind:key="widget.id"></widget>
+</ul>
+<script>
+	// the Widget component
+	let Widget = {
+		template: `<li class="widget">
+	<button v-if="edit_mode">Edit</button>
+	{{ widget.data }}
+</li>`	,
+		props: ['widget', 'edit_mode']
+	}
+	let widget_list = new Vue({
+		el: '.widget-list',
+		data: {
+			widgets: [
+				{
+					id: 1,
+					data_label: 'solar energy generated',
+					data: 'test data',
+					content_type: 'line graph'
+				},
+				{
+					id: 2, 
+					data_label: 'weed',
+					data: 'test data 2',
+					content_type: 'line graph'
+				}
+			],
+			edit_mode: true
+		},
+		components: {
+			widget: Widget
+		}
+	});
+</script>

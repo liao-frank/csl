@@ -1,0 +1,76 @@
+.content .container {
+	overflow: auto;
+}
+/* Header */
+nav {
+	margin: 25px 0;
+	text-align: center;
+} nav ul {
+	display: inline-block;
+	width: 300px; height: 100%;
+	list-style: none;
+	margin: 0; padding: 0;
+} nav ul li {
+	float: left;
+	width: 25%;
+	text-align: center;
+} nav ul li a {
+	position: relative;
+	display: inline-block;
+	background-color: #fff;
+	height: 0;
+	width: 75%; padding-top: 75%;
+	border-radius: 50%;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+
+	background-position: center;
+	background-repeat: no-repeat;
+	-webkit-transition: all 0.15s ease;
+	transition: all 0.15s ease;
+} nav ul li a:hover {
+	box-shadow: 0 5px 4px rgba(0, 0, 0, 0.14);
+} nav ul li a:focus {
+	background-color: #CCD1D9;
+	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.14);
+} nav ul li a .icon {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%);
+	-webkit-transform: translate(-50%, -50%);
+	max-height: 60%;
+	max-width: 70%;
+}
+nav .icon-thermometer {  }
+nav .icon-sun {  }
+nav .icon-air {  }
+nav ul li a .icon.icon-water { max-height: 50%; }
+
+/* Widgets */
+/* Widgets */
+.widget-list {
+	float: left;
+	width: 100%; min-height: 10px;
+	margin: 0; padding: 0;
+
+	list-style: none;
+}
+.widget-list .widget {
+	float: left;
+	position: relative;
+	width: calc(50% - 20px); height: 0; /* - margins */
+	padding-top: calc(50% * 3/4 - 20px); /* - margins */
+	margin: 10px;
+
+	background-color: #eee;
+} .widget-list .widget-wide {
+	width: calc(100% - 20px); height: 0; /* - margins */
+}
+.widget-list .widget-edit {
+	width: calc(50% - 20px - 4px); /* - margins - border */
+
+	border-radius: 4px;
+	border: dashed 2px #000;
+	background-color: #fff;
+} .widget-list .widget-edit.widget-wide {
+	width: calc(100% - 20px - 4px); /* - margins - border */
+}
