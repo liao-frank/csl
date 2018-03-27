@@ -229,16 +229,16 @@ let weather = new Weather();
 // 	console.log(err, times);
 // });
 // should be able to parse hourly forecast
-let body = require('fs').readFileSync('hourly_forecast.html', encoding="utf8");
-weather._parseHourlyForecast(body, (err, hourly_forecast) => {
-	console.log(err, hourly_forecast);
-});
-// should be able to request and parse hourly forecast from the internet
-// weather._requestHourlyForecast((err, hourly_forecast) => {
-// 	// let fs = require('fs');
-// 	// fs.writeFileSync('hourly_forecast.html', hourly_forecast);
-// 	console.log(hourly_forecast);
+// let body = require('fs').readFileSync('hourly_forecast.html', encoding="utf8");
+// weather._parseHourlyForecast(body, (err, hourly_forecast) => {
+// 	console.log(err, hourly_forecast);
 // });
+// should be able to request and parse hourly forecast from the internet
+weather._requestHourlyForecast((err, hourly_forecast) => {
+	// let fs = require('fs');
+	// fs.writeFileSync('hourly_forecast.html', hourly_forecast);
+	console.log(hourly_forecast);
+});
 
 // const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
 // const MONGO_CLIENT = require('mongodb').MongoClient;
