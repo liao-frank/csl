@@ -1,4 +1,5 @@
-let MongoModel = require( require('path').resolve() /*+ '/app/models/MongoRecord.js'*/ + '/MongoRecord.js' );
+let MongoModel = require( require('path').resolve() + '/app/models/MongoRecord.js' );
+// let MongoModel = require( require('path').resolve() + '/MongoRecord.js' );
 let request = require('request');
 // define record for queries
 class WeatherRecord extends MongoModel { }
@@ -63,15 +64,16 @@ class Weather {
 		if (sunrise_time && sunset_time) {
 			return sameDay(sunrise_time, now) && sameDay(now, sunset_time);
 		}
+		return false;
 	}
 	// retrieves sun times from the database
 	_retrieveSunTimes(callback) {
 		WeatherRecord.find({}, (err, doc) => {
 			if (err) callback(err, null);
-			else callback(null, {
+			else callback(null, doc.sun_times ? {
 				sunrise_time: new Date(doc.sun_times.sunrise_time),
 				sunset_time: new Date(doc.sun_times.sunset_time)
-			});
+			} : {});
 		});
 	}
 	// updates sun times held in database
@@ -234,11 +236,11 @@ let weather = new Weather();
 // 	console.log(err, hourly_forecast);
 // });
 // should be able to request and parse hourly forecast from the internet
-weather._requestHourlyForecast((err, hourly_forecast) => {
-	// let fs = require('fs');
-	// fs.writeFileSync('hourly_forecast.html', hourly_forecast);
-	console.log(hourly_forecast);
-});
+// weather._requestHourlyForecast((err, hourly_forecast) => {
+// 	// let fs = require('fs');
+// 	// fs.writeFileSync('hourly_forecast.html', hourly_forecast);
+// 	console.log(hourly_forecast);
+// });
 
 // const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
 // const MONGO_CLIENT = require('mongodb').MongoClient;

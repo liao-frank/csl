@@ -24,7 +24,7 @@ body {
 	opacity: 0;
 } .underlay-night {
 	background: linear-gradient(to top right, #4e58a7, #2b7bbf);
-} .underlay-night .sun-time-active {
+} .underlay-night.sun-time-active {
 	opacity: 1;
 } .underlay-day {
 	background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));
@@ -37,6 +37,10 @@ body {
 }
 .weather {
 	
+}
+.no-initial-transition {
+	transition: none;
+	-webkit-transition: none;
 }
 
 @media only screen and (max-width: 515px) {

@@ -19,6 +19,7 @@ class AppRouter extends BeanRouter {
 		MONGO_CLIENT.connect(MLAB_URL, function(err, client) {
 			if (err) console.log(err);
 			else {
+				console.log('Connected to mlab')
 				// global.mongoDB = client.db('test'); // Make reference to local db globally available.
 				global.mongoDB = client; // Make reference to external db globally available.
 			}
