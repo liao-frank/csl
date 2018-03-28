@@ -2,17 +2,25 @@
 	<widget
 		v-for="widget in widgets"
 		v-bind:widget="widget"
-		v-bind:edit_mode="edit_mode"
+		v-bind:editable="editable"
 		v-bind:key="widget.id"></widget>
 </ul>
 <script>
 	// the Widget component
 	let Widget = {
-		template: `<li class="widget">
-	<button v-if="edit_mode">Edit</button>
-	{{ widget.data }}
+		template: `<li class="widget-block">
+	<div class="widget-space">
+		<div class="widget-header header">{{ widget.data_label }}
+			<button class="show-options" v-if="editable"></button>
+			<ul class="widget-options">
+			</ul>
+		</div>
+		<div class="widget-contents">
+			{{ widget.data }}
+		</div>
+	</div>
 </li>`	,
-		props: ['widget', 'edit_mode']
+		props: ['widget', 'editable']
 	}
 	let widget_list = new Vue({
 		el: '.widget-list',
@@ -31,7 +39,7 @@
 					content_type: 'line graph'
 				}
 			],
-			edit_mode: true
+			editable: true
 		},
 		components: {
 			widget: Widget

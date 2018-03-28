@@ -1,7 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto');
 body {
 	position: relative;
 	min-height: 100vh;
 	background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));
+	font-family: 'Roboto', sans-serif;
+}
+.header {
+	font-family: 'Open Sans', sans-serif;
 }
 .container {
 	display: block;
@@ -31,5 +36,9 @@ body {
 	-webkit-transition: opacity 10s ease;
 }
 .weather {
+	
+}
+
+@media only screen and (max-width: 515px) {
 	
 }
