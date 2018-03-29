@@ -21,15 +21,17 @@ nav {
 	height: 0;
 	width: 75%; padding-top: 75%;
 	border-radius: 50%;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+	box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.14);
 
 	background-position: center;
 	background-repeat: no-repeat;
 	-webkit-transition: all 0.15s ease;
 	transition: all 0.15s ease;
+
+	cursor: pointer;
 } nav ul li a:hover {
-	box-shadow: 0 5px 4px rgba(0, 0, 0, 0.14);
-} nav ul li a:focus {
+	box-shadow: 0 5px 4px 1px rgba(0, 0, 0, 0.14);
+} nav ul li a.active {
 	background-color: #CCD1D9;
 	box-shadow: 0 0px 4px rgba(0, 0, 0, 0.14);
 } nav ul li a .icon {
@@ -40,9 +42,12 @@ nav {
 	max-height: 60%;
 	max-width: 70%;
 }
-nav .icon-thermometer {  }
-nav .icon-sun {  }
-nav .icon-air {  }
+nav ul li a .icon-thermometer {  }
+nav ul li a .icon-sun {  }
+nav ul li a .icon-air { 
+	max-width: 65%;
+	left: 47.5%;
+}
 nav ul li a .icon.icon-water { max-height: 50%; }
 
 /* Widgets */

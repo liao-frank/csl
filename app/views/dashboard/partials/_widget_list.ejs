@@ -2,8 +2,7 @@
 	<widget
 		v-for="widget in widgets"
 		v-bind:widget="widget"
-		v-bind:editable="editable"
-		v-bind:key="widget.id"></widget>
+		v-bind:editable="editable"></widget>
 </ul>
 <script>
 	// the Widget component
@@ -25,20 +24,7 @@
 	let widget_list = new Vue({
 		el: '.widget-list',
 		data: {
-			widgets: [
-				{
-					id: 1,
-					data_label: 'test label 1',
-					data: 'test data 1',
-					content_type: 'line graph'
-				},
-				{
-					id: 2, 
-					data_label: 'test label 2',
-					data: 'test data 2',
-					content_type: 'line graph'
-				}
-			],
+			widgets: [],
 			editable: true
 		},
 		components: {
