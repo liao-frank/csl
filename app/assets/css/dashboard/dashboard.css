@@ -1,5 +1,5 @@
 .content .container {
-	overflow: auto;
+	overflow: visible;
 }
 /* Header */
 nav {
