@@ -19,9 +19,17 @@ class HomeSocketedController extends HomeController {
 	// global socket
 	redirect_socket(io, socket) {
 		// sun times
-		socket.on('request_sun_times', () => {
+		socket.on('get_sun_times', () => {
 			this.weather.getSunTimes((err, sun_times) => {
-				socket.emit('response_sun_times', sun_times);
+				if (err || !sun_times) {
+					socket.emit('get_sun_times', {
+						sunrise_time: null,
+						sunset_time: null
+					});
+				}
+				else {
+					socket.emit('get_sun_times', sun_times);
+				}
 			});
 		});
 	}

@@ -6,41 +6,42 @@ socket.on("connected", function() {
 });
 // DEFINE GLOBAL SOCKET EVENTS
 (function() {
-	global_socket.on('response_sun_times', (sun_times) => {
+	global_socket.on('get_sun_times', (sun_times) => {
 		let	sunrise_time = new Date(sun_times.sunrise_time),
 			sunset_time = new Date(sun_times.sunset_time),
 			now = new Date();
 		// render things
-		let $sun_time_day = $('.sun-time-day'),
-			$sun_time_night = $('.sun-time-night');
-		if (now > sunrise_time && now < sunset_time) {
-
-			$sun_time_day.addClass('sun-time-active');
-			$sun_time_night.removeClass('sun-time-active');
+		if (now > sunset_time) { // if past sunset, render
+			activateSunTimeNight();
+		}
+		else { // if not past sunset, queue sunset
+			// console.log('queued sunset');
 			setTimeout(() => {
-				$sun_time_day.removeClass('no-initial-transition');
-				$sun_time_night.removeClass('no-initial-transition');
-			}, 0);
-		} else {
-			$sun_time_day.removeClass('sun-time-active');
-			$sun_time_night.addClass('sun-time-active');
-			setTimeout(() => {
-				$sun_time_day.removeClass('no-initial-transition');
-				$sun_time_night.removeClass('no-initial-transition');
-			}, 0);
+				activateSunTimeNight();
+			}, sunset_time - now);
+			if (now > sunrise_time) { // if past sunrise, render
+				activateSunTimeDay();
+			}
+			else { // if not past sunrise, queue sunrise and render night
+				// console.log('queued sunrise');
+				setTimeout(() => {
+					activateSunTimeDay();
+				}, sunrise_time - now);
+				activateSunTimeNight();
+			}
 		}
 		// set timer for next request
 		let tomorrow = new Date;
 		tomorrow.setDate(now.getDate() + 1);
 		tomorrow.setHours(5);
 		setTimeout(() => {
-			global_socket.emit('request_sun_times', {});
+			global_socket.emit('get_sun_times', {});
 		}, tomorrow - now);
 	});
 })();
-// DEFINE GLOBAL SOCKET EMITS
+// DEFINE INITIAL GLOBAL SOCKET EMITS
 $(document).ready(function() {
-	global_socket.emit('request_sun_times', {});
+	global_socket.emit('get_sun_times', {});
 });
 
 // cookie functions
@@ -64,4 +65,25 @@ function getCookie(cname) {
 		}
 	}
 	return "";
+}
+// sun time activation functions
+function activateSunTimeDay() {
+	let $sun_time_day = $('.sun-time-day'),
+		$sun_time_night = $('.sun-time-night');
+	$sun_time_day.addClass('sun-time-active');
+	$sun_time_night.removeClass('sun-time-active');
+	setTimeout(() => {
+		$sun_time_day.removeClass('no-initial-transition');
+		$sun_time_night.removeClass('no-initial-transition');
+	}, 0);
+}
+function activateSunTimeNight() {
+	let $sun_time_day = $('.sun-time-day'),
+		$sun_time_night = $('.sun-time-night');
+	$sun_time_day.removeClass('sun-time-active');
+	$sun_time_night.addClass('sun-time-active');
+	setTimeout(() => {
+		$sun_time_day.removeClass('no-initial-transition');
+		$sun_time_night.removeClass('no-initial-transition');
+	}, 0);
 }
