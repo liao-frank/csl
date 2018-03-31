@@ -7,6 +7,7 @@ class AppRouter extends BeanRouter {
 		this.get('/', 'home#redirect'); // add raw route
 
 		this.get('/dashboard', 'dashboard#dashboard');
+		this.get('/sandbox', 'dashboard#sandbox');
 
 
 		// prepare mongoDB
