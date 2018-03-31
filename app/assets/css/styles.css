@@ -9,10 +9,28 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 .container {
+	position: relative;
 	display: block;
 	width: 95%; max-width: 950px;
 	min-height: 1px;
 	margin: 0 auto; padding: 0;
+}
+.icon, .logo {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+button {
+	cursor: pointer;
+} button:focus {
+	outline: none;
+}
+/* Vue.js transitions */
+.fade-enter-active, .fade-leave-active {
+	transition: all 0.15s ease;
+	-webkit-transition: all 0.15s ease;
+} .fade-enter, .fade-leave-to {
+	opacity: 0;
 }
 
 /* Underlays */

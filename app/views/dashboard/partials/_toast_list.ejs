@@ -1,0 +1,52 @@
+<transition-group 
+	name="toast-list"
+	tag="ul"
+	class="toast-list"
+	@before-leave="retainPosition">
+	<toast
+		v-for="(toast, index) in toasts"
+		v-bind:key="toast.created_at"
+		v-bind:toast="toast"
+		v-on:remove="toasts.splice(index, 1)"
+		></toast>
+</transition-group>
+<script>
+	// the Toast component
+	let Toast = {
+		template: `
+<li class="toast"
+	v-bind:class="{ 'toast-success': (toast.type == 'success'),
+		'toast-failure': (toast.type == 'failure'),
+		'toast-wait': (toast.type == 'wait') 
+	}">
+		<span class="icon"></span>
+		{{ toast.message }}
+		<span class="icon icon-close"
+			v-on:click="$emit('remove')"></span>
+</li>`	,
+		props: ['toast'],
+		mounted: function() {
+			setTimeout(() => {
+				this.$emit('remove');
+			}, 4000);
+		}
+	};
+	let toast_list = new Vue({
+		el: '.toast-list',
+		data: {
+			toasts: []
+		},
+		components: {
+			toast: Toast
+		},
+		methods: {
+			retainPosition: function(el) {
+				const {marginLeft, marginTop, width, height} = window.getComputedStyle(el);
+				el.style.left = `${el.offsetLeft}px`;
+				el.style.top = `${el.offsetTop}px`;
+				el.style.width = width;
+				el.style.height = height;
+			}
+		}
+	}); 
+</script>

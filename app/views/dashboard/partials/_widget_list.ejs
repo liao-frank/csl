@@ -1,25 +1,59 @@
-<ul class="widget-list">
+<transition-group 
+	name="widget-list"
+	tag="ul"
+	class="widget-list"
+	@before-leave="retainPosition">
 	<widget
-		v-for="widget in widgets"
+		v-for="(widget, index) in widgets"
+		v-bind:key="widget.data_label"
 		v-bind:widget="widget"
-		v-bind:editable="editable"></widget>
-</ul>
+		v-bind:editable="editable"
+		v-on:remove="confirmDelete(index)"
+		:data-index="index"></widget>
+</transition-group>
 <script>
 	// the Widget component
 	let Widget = {
-		template: `<li class="widget-block">
-	<div class="widget-space">
-		<div class="widget-header header">{{ widget.data_label }}
-			<button class="show-options" v-if="editable"></button>
-			<ul class="widget-options">
-			</ul>
+		template: `
+<li class="widget-block">
+	<div class="widget-space"
+	@mouseleave="toggleEditMode(false)">
+		<div
+		class="widget-header header">{{ widget.data_label }}
+			<button class="icon icon-options"
+			v-on:click="toggleEditMode()"
+			v-if="editable"></button>
 		</div>
+		<transition name="fade">
+			<ul class="widget-options"
+			v-if="edit_mode"
+			@mouseleave="toggleEditMode(false)">
+				<li><a>
+					<span class="icon icon-edit"></span>Edit
+				</a></li>
+				<li><a
+				v-on:click="$emit('remove')">
+					<span class="icon icon-delete"></span>Delete
+				</a></li>
+			</ul>
+		</transition>
 		<div class="widget-contents">
 			{{ widget.data }}
 		</div>
 	</div>
 </li>`	,
-		props: ['widget', 'editable']
+		props: ['widget', 'editable'],
+		data: function() {
+			return {
+				edit_mode: false
+			};
+		},
+		methods: {
+			toggleEditMode: function(edit_mode=undefined) {
+				if (edit_mode!=undefined) this.edit_mode = edit_mode;
+				else this.edit_mode = !this.edit_mode;
+			}
+		}
 	}
 	let widget_list = new Vue({
 		el: '.widget-list',
@@ -29,6 +63,28 @@
 		},
 		components: {
 			widget: Widget
+		},
+		methods: {
+			retainPosition: function(el) {
+				const {marginLeft, marginTop, width, height} = window.getComputedStyle(el);
+				el.style.left = `${el.offsetLeft - parseFloat(marginLeft, 10)}px`;
+				el.style.top = `${el.offsetTop - parseFloat(marginTop, 10)}px`;
+				el.style.width = width;
+				el.style.height = height;
+			},
+			confirmDelete: function(index) {
+				let data_label = this.widgets[index].data_label;
+
+				if (window.confirm(`Are you sure you want to delete '${data_label}?'`)) {
+					let new_widgets = this.widgets.slice(0);
+					new_widgets.splice(index, 1);
+
+					socket.emit('update_widgets', {
+						category: current_category,
+						widgets: new_widgets
+					});
+				}
+			}
 		}
 	});
 </script>

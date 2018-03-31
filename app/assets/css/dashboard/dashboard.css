@@ -3,6 +3,7 @@
 }
 /* Header */
 nav {
+	position: relative;
 	margin: 25px 0;
 	text-align: center;
 } nav ul {
@@ -49,10 +50,99 @@ nav ul li a .icon-air {
 	left: 47.5%;
 }
 nav ul li a .icon.icon-water { max-height: 50%; }
+/* Notification system */
+.toast-list {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	right: 0;
+	margin: 0; padding: 0;
+	min-width: 380px;
+}
+.toast-list .toast {
+	position: relative; z-index: 10;
+	display: flex;
+	width: 250px; height: fit-content;
+	margin-bottom: 20px; padding: 15px 65px;
+	overflow: hidden;
+	background-color: #fff;
+	box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
 
+	text-align: left;
+	font-family: 'Open Sans', sans-serif;
+	transition: all 0.4s ease;
+	-webkit-transition: all 0.4s ease;
+} .toast-list .toast .icon:first-child,
+.toast-list .toast:before {
+	content: '';
+	position: absolute;
+	top: 0; left: 0;
+	width: 50px; height: 100%;
+}
+.toast-list .toast-success:before {
+	background: linear-gradient(to top right, #28C76F, #A0D468);
+} .toast-list .toast-success .icon:first-child {
+	background-image: url('/images/icons/checkmark-white.svg');
+	background-size: 50% auto;
+}
+.toast-list .toast-failure:before {
+	background: linear-gradient(to top right, #EA5455, #ED5565);
+} .toast-list .toast-failure .icon:first-child {
+	background-image: url('/images/icons/x-white.svg');
+	background-size: 33.33% auto;
+}
+.toast-list .toast-wait:before {
+	background: linear-gradient(to top right, #434A54, #656D78);
+} .toast-list .toast-wait .icon:first-child {
+	background-image: url('/images/icons/hourglass-white.svg');
+	background-size: 33.33% auto;
+	animation-name: spin;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+.toast-list .toast .icon-close {
+	position: absolute;
+	top: 30%; right: calc(25px * 40 / 100);
+	width: 25px; height: 40%;
+	background-image: url('/images/icons/x-circle-darkgray.svg');
+
+	transition: all 0.15s ease;
+	-webkit-transition: all 0.15s ease;
+	cursor: pointer;
+} .toast-list .toast .icon-close:hover {
+	transform: scale(1.1);
+	-webkit-transform: scale(1.1);
+}
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+		-webkit-transform: rotate(360deg);
+	}
+}
+/* toast list Vue.js transitions */
+.toast-list-enter, .toast-list-leave-to /* .list-leave-active below version 2.1.8 */ {
+	opacity: 0;
+	transform: translateX(50%);
+	-webkit-transform: translateX(50%);
+}
+.toast-list-move {
+	transition: all 0.4s ease;
+	-webkit-transition: all 0.4s ease;
+}
+.toast-list .toast.toast-list-leave-active {
+	position: absolute;
+}
 /* Widgets */
 .widget-list {
-	float: left;
+	display: flex;
+	flex-wrap: wrap;
+	position: relative;
 	width: 100%; min-height: 10px;
 	min-width: 750px;
 	margin: 0; padding: 0;
@@ -60,7 +150,7 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	list-style: none;
 }
 .widget-list .widget-block {
-	float: left;
+	display: flex;
 	width: 50%;
 	min-width: 200px;
 } .widget-list .widget-block .widget-space {
@@ -91,15 +181,68 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	white-space: pre;
 	letter-spacing: 0.4px;
 	background-color: #F5F7FA;
-} .widget-header .show-options {
-	float: right;
-} .widget-list .widget-block .widget-space .widget-contents {
+} .widget-header .icon-options {
+	position: absolute;
+	height: 100%; width: 5%;
+	top: 0; right: 0;
+	background-image: url('/images/icons/options-darkgray.svg');
+	background-size: auto 60%;
+	background-color: transparent;
+	border: none;
+} .widget-space .widget-options {
+	position: absolute;
+	z-index: 1;
+	top: 32px; right: 0;
+	padding: 5px 0 5px 0;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+
+	list-style: none;
+	box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.14);
+} .widget-space .widget-options a {
+	display: block;
+/*	padding: 5px 0;*/
+	padding: 5px 25px 5px 12.5px;
+	cursor: pointer;
+
+	transition: all 0.15s ease;
+	-webkit-transition: all 0.15s ease;
+} .widget-space .widget-options a:hover {
+	/*background-color: #F5F7FA;*/
+	background-color: #E6E9ED;
+} .widget-space .widget-options .icon {
+	display: inline-block;
+	height: 14px; width: 14px;
+	vertical-align: top;
+	margin-right: 4px;
+} .widget-space .widget-options .icon-edit {
+	background-image: url('/images/icons/edit-black.svg');
+} .widget-space .widget-options .icon-delete {
+	background-image: url('/images/icons/trashcan-black.svg');
+}
+.widget-list .widget-block .widget-space .widget-contents {
 	position: absolute;
 	top: 32px; left: 0;
 	width: 100%; height: calc(100% - 32px);
 	padding: 5px 8px 5px 8px;
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
+}
+
+/* widget list Vue.js transitions */
+.widget-list-enter-active, .widget-list-leave-active {
+	transition: all 0.4s ease;
+	-webkit-transition: all 0.4s ease;
+}
+.widget-list-enter, .widget-list-leave-to /* .list-leave-active below version 2.1.8 */ {
+	opacity: 0;
+}
+.widget-list-move {
+	transition: all 0.4s ease;
+	-webkit-transition: all 0.4s ease;
+}
+.widget-list-leave-active {
+	position: absolute;
 }
 @media only screen and (max-width: 515px) {
 	.widget-list {
