@@ -35,7 +35,10 @@ class Weather {
 			// if up-to-date, callback
 			if (this._checkSuntimes(sun_times)) callback(null, sun_times);
 			// if not up-to-date, update and callback
-			else this._updateSunTimes(callback);
+			else this._updateSunTimes((err, sun_times) => {
+				if (!err && sun_times) this.weather.sun_times = sun_times;
+				callback(err, sun_times);
+			});
 		}
 		// if weather doesn't exist, retrieve and re-execute
 		else {
@@ -86,8 +89,11 @@ class Weather {
 				},
 				(err, result) => {
 					// if updated successfully, retrieve and callback
-					if (!err) {
-						this._retrieveSunTimes(callback);
+					if (!err) this._retrieveSunTimes(callback);
+					else if (result.n == 0) {
+						WeatherRecord.new({
+							sun_times: times
+						}, callback);
 					}
 					// if not updated successfully, callback
 					else callback(err, null);
