@@ -5,11 +5,10 @@
 	@before-leave="retainPosition">
 	<widget
 		v-for="(widget, index) in widgets"
-		v-bind:key="widget.data_label"
+		v-bind:key="widget.title"
 		v-bind:widget="widget"
 		v-bind:editable="editable"
-		v-on:remove="confirmDelete(index)"
-		:data-index="index"></widget>
+		v-on:remove="confirmDelete(index)"></widget>
 </transition-group>
 <script>
 	// the Widget component
@@ -19,7 +18,7 @@
 	<div class="widget-space"
 	@mouseleave="toggleEditMode(false)">
 		<div
-		class="widget-header header">{{ widget.data_label }}
+		class="widget-header header">{{ widget.title }}
 			<button class="icon icon-options"
 			v-on:click="toggleEditMode()"
 			v-if="editable"></button>
@@ -73,9 +72,9 @@
 				el.style.height = height;
 			},
 			confirmDelete: function(index) {
-				let data_label = this.widgets[index].data_label;
+				let title = this.widgets[index].title;
 
-				if (window.confirm(`Are you sure you want to delete '${data_label}?'`)) {
+				if (window.confirm(`Are you sure you want to delete '${title}?'`)) {
 					let new_widgets = this.widgets.slice(0);
 					new_widgets.splice(index, 1);
 

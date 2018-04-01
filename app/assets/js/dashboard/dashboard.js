@@ -52,7 +52,7 @@ let current_category = 'weather';
 	}
 
 	function addWidget(widget, index) {
-		const required_fields = ['data_label', 'content_type'];
+		const required_fields = ['title', 'label', 'content_type'];
 		for (let i = 0; i < required_fields.length; i++) {
 			let field = required_fields[i];
 			if (!widget[field]) {
