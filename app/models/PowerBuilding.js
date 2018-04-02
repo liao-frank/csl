@@ -1,5 +1,6 @@
-// let MongoModel = require( require('path').resolve() + '/app/models/MongoRecord.js' );
-let MongoModel = require( require('path').resolve() + '/MongoRecord.js' );
+let MongoModel;
+try { MongoModel = require( require('path').resolve() + '/app/models/MongoRecord.js' ); }
+catch(err) { MongoModel = require( require('path').resolve() + '/MongoRecord.js' ); }
 let request = require('request');
 
 // define record for queries
@@ -38,13 +39,14 @@ class PowerBuilding {
 	getData(label, options, callback) {
 		if (callback == undefined) callback = options, options = {};
 		let request_config = this.request_configs[label];
+		if (!request_config) callback('invalid data label was queried', null);
 		// if storeable
-		if (request_config.storeable) {
+		else if (request_config.storeable) {
 			let stored_record = this.power_building[label];
 			// if in memory
 			if (stored_record) {
 				// if valid, callback
-				if (this._checkRecord(stored_record)) callback(null, stored_record);
+				if (this._checkRecord(stored_record)) callback(null, stored_record.data);
 				// else if not valid, update and store, then callback
 				else {
 					this._updateRecord(label, options, (err, record) => {
@@ -162,28 +164,28 @@ let power_building = new PowerBuilding();
 // 	console.log(err, data);
 // });
 
-const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
-const MONGO_CLIENT = require('mongodb').MongoClient;
-global.mongoDB;
-MONGO_CLIENT.connect(MLAB_URL, function(err, client) {
-	if (err) console.log(err);
-	else {
-		global.mongoDB = client;
-		// DATABASE TEST SUITE
-		// should update records
-		// power_building._updateRecord('solar_energy_production', {}, (err, record) => {
-		// 	console.log(err, record);
-		// });
-		// power_building._updateRecord('energy_consumption', {}, (err, record) => {
-		// 	console.log(err, record);
-		// });
-		// should get data
-		power_building.getData('energy_consumption', {}, (err, record) => {
-			console.log(err, record);
-			power_building.getData('energy_consumption', {}, (err, record) => {
-				console.log(err, record);
-			});
-		});
-	}
-});
+// const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
+// const MONGO_CLIENT = require('mongodb').MongoClient;
+// global.mongoDB;
+// MONGO_CLIENT.connect(MLAB_URL, function(err, client) {
+// 	if (err) console.log(err);
+// 	else {
+// 		global.mongoDB = client;
+// 		// DATABASE TEST SUITE
+// 		// should update records
+// 		// power_building._updateRecord('solar_energy_production', {}, (err, record) => {
+// 		// 	console.log(err, record);
+// 		// });
+// 		// power_building._updateRecord('energy_consumption', {}, (err, record) => {
+// 		// 	console.log(err, record);
+// 		// });
+// 		// should get data
+// 		// power_building.getData('energy_consumption', {}, (err, record) => {
+// 		// 	console.log(err, record);
+// 		// 	power_building.getData('energy_consumption', {}, (err, record) => {
+// 		// 		console.log(err, record);
+// 		// 	});
+// 		// });
+// 	}
+// });
 module.exports = power_building;

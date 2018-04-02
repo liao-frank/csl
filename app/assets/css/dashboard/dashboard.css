@@ -71,6 +71,7 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 
 	text-align: left;
 	font-family: 'Open Sans', sans-serif;
+	line-height: 1.5;
 	transition: all 0.4s ease;
 	-webkit-transition: all 0.4s ease;
 } .toast-list .toast .icon:first-child,
@@ -104,16 +105,18 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 }
 .toast-list .toast .icon-close {
 	position: absolute;
-	top: 30%; right: calc(25px * 40 / 100);
-	width: 25px; height: 40%;
+	top: 50%; right: calc(25px * 40 / 100);
+	width: 25px; height: 21px;
 	background-image: url('/images/icons/x-circle-darkgray.svg');
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
 
 	transition: all 0.15s ease;
 	-webkit-transition: all 0.15s ease;
 	cursor: pointer;
 } .toast-list .toast .icon-close:hover {
-	transform: scale(1.1);
-	-webkit-transform: scale(1.1);
+	transform: translateY(-50%) scale(1.1);
+	-webkit-transform: translateY(-50%) scale(1.1);
 }
 @keyframes spin {
 	from {
@@ -222,6 +225,7 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 }
 .widget-list .widget-block .widget-space .widget-contents {
 	position: absolute;
+	z-index: 1;
 	top: 32px; left: 0;
 	width: 100%; height: calc(100% - 32px);
 	padding: 5px 8px 5px 8px;
