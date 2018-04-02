@@ -1,5 +1,5 @@
-let MongoModel = require( require('path').resolve() + '/app/models/MongoRecord.js' );
-// let MongoModel = require( require('path').resolve() + '/MongoRecord.js' );
+// let MongoModel = require( require('path').resolve() + '/app/models/MongoRecord.js' );
+let MongoModel = require( require('path').resolve() + '/MongoRecord.js' );
 let request = require('request');
 // define record for queries
 class WeatherRecord extends MongoModel { }
@@ -103,7 +103,7 @@ class Weather {
 	}
 	// request sun times from the internets
 	_requestSunTimes(callback) {
-		let url = 'http://anyorigin.com/go?url=https%3A//www.timeanddate.com/sun/usa/pittsburgh&callback=?';
+		let url = 'http://allorigins.me/get?url=https%3A//www.timeanddate.com/sun/usa/pittsburgh&callback=?';
 		request(url, (err, response, body) => {
 			let times;
 			if (body) {
@@ -233,9 +233,9 @@ class Weather {
 let weather = new Weather();
 // TEST SUITE
 // should be able to request new times from the internet
-// weather._requestSunTimes((err, times) => {
-// 	console.log(err, times);
-// });
+weather._requestSunTimes((err, times) => {
+	console.log(err, times);
+});
 // should be able to parse hourly forecast
 // let body = require('fs').readFileSync('hourly_forecast.html', encoding="utf8");
 // weather._parseHourlyForecast(body, (err, hourly_forecast) => {
