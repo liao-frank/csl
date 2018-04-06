@@ -5,7 +5,7 @@
 	@before-leave="retainPosition">
 	<toast
 		v-for="(toast, index) in toasts"
-		v-bind:key="toast.created_at"
+		v-bind:key="`${toast.message}@${toast.created_at}`"
 		v-bind:toast="toast"
 		v-on:remove="toasts.splice(index, 1)"
 		></toast>

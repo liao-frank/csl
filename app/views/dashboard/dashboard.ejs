@@ -1,5 +1,9 @@
-<% include partials/_header.ejs %>
 <div class="container">
 	<% include partials/_toast_list.ejs %>
+	<header>
+		<% include partials/_header.ejs %>
+		<div class="main-message"></div>
+		<% include partials/_csl_environment.ejs %>
+	</header>
 	<% include partials/_widget_list.ejs %>
 </div>

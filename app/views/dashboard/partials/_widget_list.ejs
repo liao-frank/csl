@@ -18,10 +18,10 @@
 	<div class="widget-space"
 	@mouseleave="toggleEditMode(false)">
 		<div
-		class="widget-header header">{{ widget.title }}
+		class="widget-header header"
+		v-if="editable">{{ widget.title }}
 			<button class="icon icon-options"
-			v-on:click="toggleEditMode()"
-			v-if="editable"></button>
+			v-on:click="toggleEditMode()"></button>
 		</div>
 		<transition name="fade">
 			<ul class="widget-options"
@@ -36,14 +36,13 @@
 				</a></li>
 			</ul>
 		</transition>
-		<div class="widget-contents">
-			{{ widget.data }}
-		</div>
+		<div class="widget-contents"></div>
 	</div>
 </li>`	,
 		props: ['widget', 'editable'],
 		data: function() {
 			return {
+				data: null,
 				edit_mode: false
 			};
 		},
@@ -51,14 +50,25 @@
 			toggleEditMode: function(edit_mode=undefined) {
 				if (edit_mode!=undefined) this.edit_mode = edit_mode;
 				else this.edit_mode = !this.edit_mode;
+			},
+			createChart: function() {
+				let node = this.charter.generateChart(this.data, this.widget.content_type, {});
+				console.log(node);
+			},
+			getData: function() {
+				// TODO request data
+				console.log('looking for data...');
 			}
+		},
+		mounted: function() {
+			this.getData();
 		}
 	}
 	let widget_list = new Vue({
 		el: '.widget-list',
 		data: {
 			widgets: [],
-			editable: true
+			editable: false
 		},
 		components: {
 			widget: Widget
