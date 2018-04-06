@@ -75,10 +75,7 @@ class Weather {
 	_retrieveSunTimes(callback) {
 		WeatherRecord.find({}, (err, doc) => {
 			if (err) callback(err, null);
-			else callback(null, doc.sun_times ? {
-				sunrise_time: new Date(doc.sun_times.sunrise_time),
-				sunset_time: new Date(doc.sun_times.sunset_time)
-			} : {});
+			else callback(null, doc.sun_times);
 		});
 	}
 	// updates sun times held in database
@@ -144,23 +141,80 @@ class Weather {
 	}
 
 	getHourlyForecast(callback) {
-
+		// if in memory
+		if (this.weather && this.weather.hourly_forecast) {
+			let hourly_forecast = this.weather.hourly_forecast;
+			// if valid, callback
+			if (this._checkHourlyForecast(hourly_forecast)) callback(null, hourly_forecast);
+			// if not valid, update, store
+			else {
+				this._updateHourlyForecast((err, doc) => {
+					// if valid, callback
+					if (this._checkHourlyForecast(doc)) {
+						this.weather.hourly_forecast = doc;
+						callback(null, doc);
+					}
+					// if not valid, raise an error
+					else callback('unable to update hourly forecast', null);
+				});
+			}
+		}
+		// if not in memory, retrieve, store, and re-execute
+		else {
+			this._retrieveHourlyForecast((err, doc) => {
+				if (err) callback(err, null);
+				else {
+					this.weather.hourly_forecast = doc;
+					this.getHourlyForecast(callback);
+				}
+			});
+		}
 	}
 	// check validity of hourly forecast, including up-to-datedness
-	_checkHourlyForecast(forecast) {
-
+	_checkHourlyForecast(hourly_forecast) {
+		let now = new Date();
+		if (hourly_forecast.start_time && hourly_forecast.end_time) {
+			if (hourly_forecast.start_time < now && hourly_forecast.end_time > now) {
+				return true;
+			}
+		}
+		return false;
 	}
 	// updates weather held in database
 	_updateHourlyForecast(callback) {
-		
+		this._requestHourlyForecast((err, forecast) => {
+			try {
+				if (err) callback(err, null);
+				else {
+					WeatherRecord.findAndUpdate({}, {
+						hourly_forecast: forecast
+					}, (err, result) => {
+						// if found and no error, conclude updated, then retrieve and callback
+						if (result && !err) this._retrieveHourlyForecast(callback);
+						// else create new and callback
+						else if (result.n == 0) {
+							WeatherRecord.new({
+								hourly_forecast: forecast
+							}, callback);
+						}
+						else callback(err, null);
+					});
+				}
+			} catch(err) {
+				console.log(err);
+				callback('failed to update forecast in mlab', null);
+			}
+		});
 	}
 	// retrieves hourly forecast from the database
 	_retrieveHourlyForecast(callback) {
-
+		WeatherRecord.find({}, (err, doc) => {
+			callback(err, doc.hourly_forecast);
+		});
 	}
 	// requests hourly forecast from the internet
 	_requestHourlyForecast(callback) {
-		let url = 'http://anyorigin.com/go?url=https%3A//weather.com/weather/hourbyhour/l/USPA1290%3A1%3AUS&callback=?';
+		let url = 'http://allorigins.me/get?url=https%3A//weather.com/weather/hourbyhour/l/USPA1290%3A1%3AUS&callback=?';
 		request(url, (err, response, body) => {
 			if (err) callback(err, null);
 			else this._parseHourlyForecast(body, callback);
@@ -172,7 +226,7 @@ class Weather {
 		// console.log(body);
 		let	table = body.match(/\<table\sclass\=\"twc\-table\"\sclassName\=\"twc\-table\"\>.*?\<\/table\>/)[0],
 			// times
-			time_elems = table.match(/\d*:00\s(am|pm)/g),
+			time_elems = table.match(/\d*:\d\d\s(am|pm)/g),
 			times = time_elems.map((elem) => {
 				return parseInt(elem.match(/\d+/)[0]) + (elem.match('pm') ? 12 : 0);
 			}),
@@ -206,16 +260,19 @@ class Weather {
 		}
 		if (!matchable) callback('unmatchable attribute lists during hourly forecast parsing');
 		else {
+			let now = new Date(),
+				standard = new Date(now);
+			standard.setMinutes(0);
 			let	hourly_forecast = {
-				start_time: null,
-				end_time: null,
+				start_time: now,
+				end_time: new Date(standard.getTime() + 3600000 * attrs[keys[0]].length),
 				forecast: {}
-			}
+			};
 			// match attributes together
 			let	attr_length = attrs[keys[0]].length;
 			for (let i = 0; i < attr_length; i++) {
 				// create time
-				let	time = attrs.times[i];
+				let	time = new Date(standard.getTime() + 3600000 * i);
 				hourly_forecast.forecast[time] = {
 				}
 				// add attributes
@@ -247,7 +304,7 @@ let weather = new Weather();
 // weather._requestHourlyForecast((err, hourly_forecast) => {
 // 	// let fs = require('fs');
 // 	// fs.writeFileSync('hourly_forecast.html', hourly_forecast);
-// 	console.log(hourly_forecast);
+// 	console.log(err, hourly_forecast);
 // });
 
 // const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
@@ -257,6 +314,7 @@ let weather = new Weather();
 // 	if (err) console.log(err);
 // 	else {
 // 		global.mongoDB = client;
+// 		console.log('connected, testing...');
 // 		// DATABASE TEST SUITE
 // 		// should be able to update sun times in the database
 // 		// weather._updateSunTimes((err, result) => {
@@ -270,6 +328,14 @@ let weather = new Weather();
 // 		// weather.getSunTimes((err, result) => {
 // 		// 	console.log(err, result);
 // 		// });
+// 		// should update hourlyforecast
+// 		// weather._updateHourlyForecast((err, forecast) => {
+// 		// 	console.log(err, forecast);
+// 		// });
+// 		// should be able to get hourly forecast
+// 		weather.getHourlyForecast((err, forecast) => {
+// 			console.log(err, forecast);
+// 		});
 // 	}
 // });
 

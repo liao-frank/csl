@@ -32,5 +32,14 @@ class HomeSocketedController extends HomeController {
 				}
 			});
 		});
+		// weather
+		socket.on('get_hourly_forecast', () => {
+			this.weather.getHourlyForecast((err, forecast) => {
+				socket.emit('get_hourly_forecast', {
+					hourly_forecast: forecast,
+					err: err
+				});
+			});
+		});
 	}
 }
