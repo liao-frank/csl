@@ -1,1 +1,6 @@
 node_modules/*
+app/assets/adobe
+app/.DS_Store
+app/views/layouts/.DS_Store
+app/views/dashboard/.DS_Store
+app/views/.DS_Store
