@@ -1,3 +1,4 @@
+node_modules
 node_modules/*
 app/assets/adobe
 app/.DS_Store
