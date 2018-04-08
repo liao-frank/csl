@@ -7,7 +7,7 @@ let current_category = {
 	socket.on('get_dashboard', (data) => {
 		// check error
 		if (data.err) {
-			logError('err');
+			log('err');
 			alertToast('failure', `unable to retrieve category '${current_category.category}'`);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
@@ -17,14 +17,14 @@ let current_category = {
 			// render main message
 			renderHeader(dashboard.title, dashboard.message);
 		} else {
-			logError(`'get_dashboard' event received w/ bad data\n`, data);
+			log(`'get_dashboard' event received w/ bad data\n`, data);
 		}
 	});
 	// on update 
 	socket.on('update_dashboard', (data) => {
 		// check error
 		if (data.err) {
-			logError('err');
+			log('err');
 			alertToast('failure', `unable to update category '${current_category.category}'`);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
@@ -34,7 +34,7 @@ let current_category = {
 			// render main message
 			renderHeader(dashboard.title, dashboard.message);
 		} else {
-			logError(`'update_dashboard' event received w/ bad data\n`, data);
+			log(`'update_dashboard' event received w/ bad data\n`, data);
 		}
 
 		// let	category = data.category,

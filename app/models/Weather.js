@@ -89,7 +89,7 @@ class Weather {
 				(err, result) => {
 					// if updated successfully, retrieve and callback
 					if (!err) this._retrieveSunTimes(callback);
-					else if (result.n == 0) {
+					else if (result && (result.n == 0)) {
 						WeatherRecord.new({
 							sun_times: times
 						}, callback);
@@ -192,7 +192,7 @@ class Weather {
 						// if found and no error, conclude updated, then retrieve and callback
 						if (result && !err) this._retrieveHourlyForecast(callback);
 						// else create new and callback
-						else if (result.n == 0) {
+						else if (result && result.n == 0) {
 							WeatherRecord.new({
 								hourly_forecast: forecast
 							}, callback);

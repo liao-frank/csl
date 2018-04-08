@@ -1,11 +1,3 @@
-function logError(msg, obj) {
-	let output = `${(new Date).toLocaleString().match(/\d+\:\d+\:\d+ (PM|AM)/)[0]}: ${msg}`;
-	if (obj) {
-		output += `\n`;
-		console.log(output, obj);
-	}
-	else console.log(output);
-}
 let	socket = io(window.location.pathname),
 	global_socket = io('/');
 socket.on("connected", function() {
@@ -19,7 +11,7 @@ socket.on("connected", function() {
 			sunset_time = new Date(sun_times.sunset_time),
 			now = new Date();
 		if (!sunrise_time && !sunset_time) {
-			logError(`'get_sun_times' event received w/ bad data\n`, sun_times);
+			log(`'get_sun_times' event received w/ bad data\n`, sun_times);
 			return;
 		}
 		// render things
@@ -28,7 +20,7 @@ socket.on("connected", function() {
 		}
 		else { // if not past sunset, queue sunset
 			// console.log('queued sunset');
-			setTimeout(() => {
+			queueAction(() => {
 				activateSunTimeNight();
 			}, sunset_time - now);
 			if (now > sunrise_time) { // if past sunrise, render
@@ -36,7 +28,7 @@ socket.on("connected", function() {
 			}
 			else { // if not past sunrise, queue sunrise and render night
 				// console.log('queued sunrise');
-				setTimeout(() => {
+				queueAction(() => {
 					activateSunTimeDay();
 				}, sunrise_time - now);
 				activateSunTimeNight();
@@ -47,8 +39,8 @@ socket.on("connected", function() {
 		tomorrow.setDate(now.getDate() + 1);
 		tomorrow.setHours(5);
 		tomorrow.setMinutes(30);
-		setTimeout(() => {
-			console.log('updating sun times...');
+		window.update_sun_times = queueAction(() => {
+			log('updating sun times...');
 			global_socket.emit('get_sun_times', {});
 		}, tomorrow - now);
 	});
@@ -59,9 +51,9 @@ socket.on("connected", function() {
 			end_time = hourly_forecast && hourly_forecast.end_time && new Date(hourly_forecast.end_time),
 			now = new Date();
 		console.log(hourly_forecast);
-		if (hourly_forecast.err) logError(err, hourly_forecast);
+		if (hourly_forecast.err) log(err, hourly_forecast);
 		else if (!forecast || !start_time || !end_time || (end_time < now)) {
-			logError(`'get_hourly_forecast' event received w/ bad data\n`, hourly_forecast);
+			log(`'get_hourly_forecast' event received w/ bad data\n`, hourly_forecast);
 		}
 		else {
 			// find the appropriate forecast for now
@@ -71,21 +63,22 @@ socket.on("connected", function() {
 					time_diff = time - now;
 				// render now
 				if (time_diff < 0 && time_diff > -3600000) {
-					console.log(`activated current weather\n`, weather);
+					console.log(`activated current weather`, weather);
 					activateWeather(weather);
 				}
 				// queue all other forecasts
 				else if (time_diff > 0) {
-					console.log(`queued weather activation in ${time_diff}\n`, weather);
-					setTimeout(() => {
+					log(`queued weather activation in ${time_diff}`, weather);
+					queueAction(() => {
+						log(`activating weather ${weather}`);
 						activateWeather(weather);
-					});
+					}, time_diff);
 				}
 			}
 			// queue forecast update
-			console.log(`queued hourly forecast update in ${end_time.getTime() - now.getTime() + 600000}`);
-			setTimeout(() => {
-				console.log('updating hourly forecast...');
+			log(`queued hourly forecast update in ${end_time.getTime() - now.getTime() + 600000}`);
+			window.update_hourly_forecast = queueAction(() => {
+				log('updating hourly forecast...');
 				global_socket.emit('get_hourly_forecast', {});
 			}, end_time.getTime() - now.getTime() + 600000);
 		}
@@ -98,28 +91,6 @@ $(document).ready(function() {
 	activateSunTimeDay();
 });
 
-// cookie functions
-function setCookie(cname, cvalue, exdays) {
-	var d = new Date();
-	d.setTime(d.getTime() + (exdays*24*60*60*1000));
-	var expires = "expires="+ d.toUTCString();
-	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-function getCookie(cname) {
-	var name = cname + "=";
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for(var i = 0; i <ca.length; i++) {
-		var c = ca[i];
-		while (c.charAt(0) == ' ') {
-			c = c.substring(1);
-		}
-		if (c.indexOf(name) == 0) {
-			return c.substring(name.length, c.length);
-		}
-	}
-	return "";
-}
 // dynamic activation functions
 $(window).on('load', function() {
 	$('.no-initial-transition').removeClass('no-initial-transition');
@@ -177,4 +148,49 @@ function activateWeather(forecast) {
 		if (forecast.match(/Cloud/i) && !forecast.match(/Part/i)) $('.weather-overcast').addClass('weather-active');
 		else if (forecast.match(/Cloud/i)) $('.clouds').addClass('weather-active');
 	}
+}
+
+/* Core functions */
+function log(msg, obj) {
+	let output = `${(new Date).toLocaleString().match(/\d+\:\d+\:\d+ (PM|AM)/)[0]}: ${msg}`;
+	if (obj) {
+		output += `\n`;
+		console.log(output, obj);
+	}
+	else console.log(output);
+}
+function setCookie(cname, cvalue, exdays) {
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	var expires = "expires="+ d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function getCookie(cname) {
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for(var i = 0; i <ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+function queueAction(action, timeout, check_duration=60000) {
+	let	now = new Date(),
+		interval;
+	timeout = new Date(now.getTime() + timeout);
+
+	interval = setInterval(() => {
+		let now = new Date();
+		// if ready, action, then unqueue
+		if (now > timeout) {
+			action();
+			clearInterval(interval);
+		}
+	}, check_duration);
 }
