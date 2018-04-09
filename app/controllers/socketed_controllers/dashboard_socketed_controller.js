@@ -5,7 +5,7 @@ class DashboardSocketedController extends DashboardController {
 		// dashboard provides dashboard contents
 		this._dashboard = require(this.path + '/app/models/Dashboard.js');
 		// power_building provides data given a label
-		this.power_building = require(this.path + '/app/models/PowerBuilding.js');
+		this.living_building = require(this.path + '/app/models/LivingBuilding.js');
 	}
 
 	dashboard_socket(io, socket) {
@@ -34,7 +34,7 @@ class DashboardSocketedController extends DashboardController {
 		// on update
 		socket.on('update_dashboard', (data) => {
 			let	category = data.dashboard.category;
-			this.widgeter.updateWidgets(category, data.dashboard, (err, doc) => {
+			this._dashboard.updateDashboard(category, data.dashboard, (err, doc) => {
 				// if error occurred, return null widgets
 				if (err || !doc) {
 					socket.emit('update_dashboard', {
@@ -59,7 +59,7 @@ class DashboardSocketedController extends DashboardController {
 			// let	label = obj.label,
 			// 	options = obj.options;
 
-			// this.power_building.getData(label, options, (err, data) => {
+			// this.living_building.getData(label, options, (err, data) => {
 			// 	socket.emit('get_data', {
 			// 		label: label,
 			// 		data: data

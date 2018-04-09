@@ -99,13 +99,3 @@
 		</a></li>
 	</ul>
 </nav>
-<script>
-	$category_links = $('nav ul li a');
-	$category_links.on('click', function() {
-		let $this = $(this);
-		current_category.category = $this.data('category');
-		$category_links.removeClass('active');
-		$this.addClass('active');
-		requestDashboard(current_category);
-	});
-</script>

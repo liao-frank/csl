@@ -51,17 +51,13 @@
 				if (edit_mode!=undefined) this.edit_mode = edit_mode;
 				else this.edit_mode = !this.edit_mode;
 			},
-			createChart: function() {
-				let node = this.charter.generateChart(this.data, this.widget.content_type, {});
-				console.log(node);
-			},
-			getData: function() {
-				// TODO request data
-				console.log('looking for data...');
+			render: function() {
+				let $contents = $(this.$el).find('.widget-contents');
+				$contents.html(this.widget.template);
 			}
 		},
 		mounted: function() {
-			this.getData();
+			this.render();
 		}
 	}
 	let widget_list = new Vue({
@@ -88,9 +84,11 @@
 					let new_widgets = this.widgets.slice(0);
 					new_widgets.splice(index, 1);
 
-					socket.emit('update_widgets', {
-						category: current_category,
-						widgets: new_widgets
+					socket.emit('update_dashboard', {
+						dashboard: {
+							category: current_category.category,
+							widgets: new_widgets
+						}
 					});
 				}
 			}

@@ -58,14 +58,6 @@ nav ul li a .icon-air {
 	left: 47.5%;
 }
 nav ul li a .icon.icon-water { max-height: 50%; }
-/* Generator */
-.generator:not(.generator-active) {
-	opacity: 0;
-	transition: opacity 10s ease;
-	-webkit-transition: opacity 10s ease;
-} .generator.generator-active {
-	opacity: 1;
-}
 
 /* Notification system */
 .toast-list {
@@ -166,6 +158,7 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	width: 100%; min-height: 10px;
 	min-width: 750px;
 	margin: 0; padding: 0;
+	margin-top: 36.5px;
 
 	list-style: none;
 }
@@ -187,6 +180,7 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 } .widget-list .widget-block .widget-space .widget-header {
 	position: absolute;
 	top: 0; left: 0;
+	z-index: 2;
 	width: 100%; height: 32px;
 	padding: 0 10%;
 	box-sizing: border-box;
@@ -204,7 +198,7 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 } .widget-header .icon-options {
 	position: absolute;
 	height: 100%; width: 5%;
-	top: 0; right: 0;
+	top: 0; right: 2px;
 	background-image: url('/images/icons/options-darkgray.svg');
 	background-size: auto 60%;
 	background-color: transparent;
@@ -285,11 +279,38 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 }
 .main-message {
 	width: 50%;
+	padding: 0 5% 0 1.66%;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.main-message .header {
+    margin: 0 0 0 0;
+}
+.main-message p {
+	color: #2e333a;
+	margin-bottom: 0;
+	line-height: 1.5;
+	text-align: justify;
+	hyphens: auto;
+	word-wrap: break-word;
+}
+.main-message p.sun-time {
+	opacity: 1;
+} .main-message p.sun-time-active {
+	color: #fff;
 }
 /* CSL */
 .csl-environment-space {
 	position: relative;
 	width: 50%;
+}
+.csl-environment-space svg:before {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+	z-index: -1;
+	background: inherit;
 }
 .csl-environment-space .category-title {
 	position: absolute;
@@ -305,19 +326,27 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 .csl-environment-space .moon {
 	transform: translate3d(0px, 100px, 0px);
 	-webkit-transform: translate3d(0px, 100px, 0px);
+/*	transform: translate(0px, 100px);
+	-webkit-transform: translate(0px, 100px);*/
 }
 .csl-environment-space .sun.sun-time-active,
 .csl-environment-space .moon.sun-time-active {
 	transform: translate3d(0px, 0px, 0px);
 	-webkit-transform: translate3d(0px, 0px, 0px);
+/*	transform: translate(0px, 0px);
+	-webkit-transform: translate(0px, 0px);*/
 }
 .csl-environment-space .weather:not(.csl) {
 	transform: translate3d(-15px, 0px, 0px);
 	-webkit-transform: translate3d(-15px, 0px, 0px);
+/*	transform: translate(-15px, 0px);
+	-webkit-transform: translate(-15px, 0px);*/
 }
 .csl-environment-space .weather.weather-active:not(.csl) {
 	transform: translate3d(0px, 0px, 0px);
 	-webkit-transform: translate3d(0px, 0px, 0px);
+/*	transform: translate(0px, 0px);
+	-webkit-transform: translate(0px, 0px);*/
 }
 .csl-environment-space .precipitation {
 	animation-name: precipitation;
@@ -326,6 +355,37 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	animation-timing-function: linear;
 	will-change: transform;
 	backface-visibility: hidden;
+}
+.csl-environment-space .fan {
+	animation-name: spin;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+.csl-environment-space .fan-large {
+	transform-origin: 87.78925% 53.0952%;
+	-webkit-transform-origin: 87.78925% 53.0952%;
+}
+.csl-environment-space .fan-small {
+	transform-origin: 73.72482% 66.49640%;
+	-webkit-transform-origin: 73.72482% 66.49640%;
+}
+.csl-environment-space .thunderbolt {
+	animation-name: flash;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+.generator.sun-time.sun-time-active,
+.generator:not(.sun-time) {
+	opacity: 0;
+} .generator.generator-active.sun-time.sun-time-active,
+.generator.generator-active:not(.sun-time) {
+	opacity: 1;
+}
+.no-initial-transition {
+	transition: all 0s linear !important;
+	-webkit-transition: all 0s linear !important;
 }
 @keyframes precipitation {
 	0%, 100% {
@@ -336,4 +396,20 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 		transform: translate3d(0px, 3px, 0px);
 		-webkit-transform: translate3d(0px, 3px, 0px);
 	}
+}
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+		-webkit-transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+		-webkit-transform: rotate(360deg);
+	}
+}
+@keyframes flash {
+	0% { visibility: visible; } 19% { visibility: visible; }
+	20% { visibility: hidden; } 39% { visibility: hidden; } 
+	40% { visibility: visible; } 49% { visibility: visible; }
+	50% { visibility: hidden; } 99% { visibility: hidden; }
 }

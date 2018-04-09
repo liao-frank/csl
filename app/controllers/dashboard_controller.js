@@ -29,7 +29,6 @@ class DashboardController extends BeanController {
 			<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 			<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 			<script type="text/javascript" src="/js/scripts.js"></script>
-			<script type="text/javascript" src="/js/dashboard/charter.js"></script>
 			<script type="text/javascript" src="/js/dashboard/dashboard.js"></script>`,
 			__stylesheet_tags: `
 			<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">

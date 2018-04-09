@@ -1,24 +1,140 @@
-<style>
-	canvas {
-		width:100%; height: 100%;
-	}
-</style>
-<div class="chart-space" style="width: 400px; height: 300px; background: white;">
-	<canvas class="solar-energy" width='4' height='3'></canvas>
+<div class="container">
+	<ul class="widget-list">
+		<li class="widget-block">
+			<div class="widget-space">
+				<div class="widget-contents">
+					<div class="content-global" style="
+						position: absolute;
+						top: 47.5%; left: 50%;
+						transform: translate(-50%, -50%);
+						-webkit-transform: translate(-50%, -50%);
+						text-align: center;
+						font-family: Open Sans, sans-serif;
+					">
+						<div style="
+							width: 100%;
+							font-size: 14px;
+							text-transform: uppercase;
+							letter-spacing: 2px;
+						"> </div>
+						<div style="
+							width: 100%;
+							margin: 0 0 10% 0;
+							font-size: 60px;
+							font-family: Roboto, sans-serif;
+							font-weight: lighter;
+							line-height: 60px;
+						">
+							<span class="temperature">35</span><span style="
+								font-size: 24px;
+								vertical-align: text-top;
+							">°F</span>
+						</div>
+						<div style="
+							width: 100%;
+							font-size: 18px;
+							text-transform: uppercase;
+							letter-spacing: 2px;
+						">Outside</div>
+					</div>
+				</div>
+				<script>
+					(function() {
+						$this = $('.widget-contents').last();
+					})();
+				</script>
+			</div>
+		</li>
+		<li class="widget-block">
+			<div class="widget-space">
+				<div class="widget-contents">
+					<div class="content-global" style="
+						position: absolute;
+						top: 47.5%; left: 50%;
+						transform: translate(-50%, -50%);
+						-webkit-transform: translate(-50%, -50%);
+						text-align: center;
+						font-family: Open Sans, sans-serif;
+					">
+						<div style="
+							width: 100%;
+							font-size: 14px;
+							text-transform: uppercase;
+							letter-spacing: 2px;
+						"> </div>
+						<div style="
+							width: 100%;
+							margin: 0 0 10% 0;
+							font-size: 60px;
+							font-family: Roboto, sans-serif;
+							font-weight: lighter;
+							line-height: 60px;
+						">
+							<span class="temperature">35</span><span style="
+								font-size: 24px;
+								vertical-align: text-top;
+							">°F</span>
+						</div>
+						<div style="
+							width: 100%;
+							font-size: 18px;
+							text-transform: uppercase;
+							letter-spacing: 2px;
+						">Atrium</div>
+					</div>
+				</div>
+				<script>
+					(function() {
+						
+					})();
+				</script>
+			</div>
+		</li>
+		<li class="widget-block">
+			<div class="widget-space">
+				<div class="widget-contents">
+					<div class="content-global" style="
+						width:  100%;
+						height: 100%;
+						position:  absolute;
+						top: 0; left: 0;
+						padding: 25px 15px;
+						box-sizing:  border-box;
+					">	
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 94" style="position: absolute;
+						width: 35%;
+						top: 0; left: 59%;
+						transform: translateY(-20%);
+						-webkit-transform: translateY(-20%);
+						"><path d="M134,0H10A10,10,0,0,0,0,10V48A10,10,0,0,0,10,58H134a10,10,0,0,0,10-10V10A10,10,0,0,0,134,0ZM10,4H134a6,6,0,0,1,6,6V38H4V10A6,6,0,0,1,10,4ZM64,54H22V50H122v4H64Zm70,0h-8V46H18v8H10a6,6,0,0,1-6-6V42H140v6A6,6,0,0,1,134,54Z" style="fill:#6f7e91"/><rect x="10" y="26" width="16" height="4" style="fill:#6f7e91"/><rect x="30" y="26" width="4" height="4" style="fill:#6f7e91"/><path d="M28,66H24a4.49,4.49,0,0,1-1.52,3.36,8.43,8.43,0,0,0,0,11.94,4.48,4.48,0,0,1,0,6.73A8.37,8.37,0,0,0,20,94h4a4.52,4.52,0,0,1,1.52-3.37,8.41,8.41,0,0,0,0-11.93,4.48,4.48,0,0,1,0-6.73A8.37,8.37,0,0,0,28,66Z" style="fill:#6f7e91"/><path d="M52,66H48a4.49,4.49,0,0,1-1.52,3.36,8.43,8.43,0,0,0,0,11.94,4.48,4.48,0,0,1,0,6.73A8.37,8.37,0,0,0,44,94h4a4.52,4.52,0,0,1,1.52-3.37,8.41,8.41,0,0,0,0-11.93,4.48,4.48,0,0,1,0-6.73A8.37,8.37,0,0,0,52,66Z" style="fill:#6f7e91"/><path d="M76,66H72a4.49,4.49,0,0,1-1.52,3.36,8.43,8.43,0,0,0,0,11.94,4.48,4.48,0,0,1,0,6.73A8.37,8.37,0,0,0,68,94h4a4.52,4.52,0,0,1,1.52-3.37,8.41,8.41,0,0,0,0-11.93,4.48,4.48,0,0,1,0-6.73A8.37,8.37,0,0,0,76,66Z" style="fill:#6f7e91"/><path d="M100,66H96a4.49,4.49,0,0,1-1.52,3.36,8.43,8.43,0,0,0,0,11.94,4.48,4.48,0,0,1,0,6.73A8.37,8.37,0,0,0,92,94h4a4.52,4.52,0,0,1,1.52-3.37,8.41,8.41,0,0,0,0-11.93,4.48,4.48,0,0,1,0-6.73A8.37,8.37,0,0,0,100,66Z" style="fill:#6f7e91"/><path d="M124,66h-4a4.49,4.49,0,0,1-1.52,3.36,8.43,8.43,0,0,0,0,11.94,4.48,4.48,0,0,1,0,6.73A8.37,8.37,0,0,0,116,94h4a4.52,4.52,0,0,1,1.52-3.37,8.41,8.41,0,0,0,0-11.93,4.48,4.48,0,0,1,0-6.73A8.37,8.37,0,0,0,124,66Z" style="fill:#6f7e91"/></svg>
+						<h3 class="header" style="
+							margin-top: 0;
+						">Did you know?</h3>
+						<p style="
+							line-height: 1.6;
+						">
+							The atrium is not mechanically heated nor cooled. Heat-absorbing construction materials, high-performance window glazing, and special insulation all help maintain comfortable temperatures.
+						</p>
+					</div>
+				</div>
+				<script>
+					(function() {
+						
+					})();
+				</script>
+			</div>
+		</li>
+		<li class="widget-block">
+			<div class="widget-space">
+				<div class="widget-contents">
+					
+				</div>
+				<script>
+					(function() {
+						
+					})();
+				</script>
+			</div>
+		</li>
+	</ul>
 </div>
-<div class="chart-space" style="width: 400px; height: 300px; background: white;">
-    <canvas class="solar-radiation" width='4' height='3'></canvas>
-</div>
-<div class="chart-space" style="width: 400px; height: 300px; background: white;">
-    <canvas class="solar-compare" width='4' height='3'></canvas>
-</div>
-<div class="chart-space" style="width: 400px; height: 300px; background: white;">
-    <canvas class="tanklvl" width='4' height='3'></canvas>
-</div>
-<div class="chart-space" style="width: 400px; height: 300px; background: white;">
-    <canvas class="water-usage" width='4' height='3'></canvas>
-</div>
-<div class="chart-space" style="width: 400px; height: 300px; background: white;">
-    <canvas class="chart-demo2" width='4' height='3'></canvas>
-</div>
-

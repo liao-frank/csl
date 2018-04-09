@@ -20,7 +20,7 @@ class Dashboard {
 					DashboardRecord.new(dashboard, callback);
 				}
 				else {
-					this.getWidgets(category, callback);
+					this.getDashboard(category, callback);
 				}
 			}
 		);

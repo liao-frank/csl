@@ -1,24 +1,29 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Roboto:300');
 body {
 	position: relative;
 	min-height: 100vh;
 	/*background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));*/
 	font-family: 'Roboto', sans-serif;
+	font-weight: lighter;
 }
 .header {
 	font-family: 'Open Sans', sans-serif;
 	/*color: #fff;*/
 }
 h1.header {
-	font-size: 56px;
+	font-size: 54px;
 	text-transform: uppercase;
-	letter-spacing: 4px;
+	letter-spacing: 2px;
 	text-shadow: 1px 2px 4px #434a5469;
+	color: #fff;
+}
+h3.header {
+	letter-spacing: 0.8px;
 }
 .container {
 	position: relative;
 	display: block;
-	width: 95%; max-width: 950px;
+	width: 95%; /*max-*/width: 950px;
 	min-height: 1px;
 	margin: 0 auto; padding: 0;
 }
@@ -52,6 +57,74 @@ button {
 	background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));
 } .underlay-overcast {
 	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.lock {
+	width: 24px; height: 21px;
+	border: 3px solid #fff;
+	border-radius: 5px;
+	position: absolute;
+	top: 10px; right: 5px;
+	cursor: pointer;
+	-webkit-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
+	transform: scale(0.7);
+}
+.lock:after {
+	content: "";
+	display: block;
+	background: #fff;
+	width: 3px; height: 7px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -3.5px 0 0 -2px;
+	-webkit-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
+}
+.lock:before {
+	content: "";
+	display: block;
+	width: 10px; height: 10px;
+	bottom: 100%;
+	position: absolute;
+	left: 50%;
+	margin-left: -8px;
+	border: 3px solid #fff;
+	border-top-right-radius: 50%;
+	border-top-left-radius: 50%;
+	border-bottom: 0;
+	-webkit-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
+}
+.lock:hover:before {
+  height: 12px;
+}
+.unlocked {
+  transform: scale(0.7) rotate(10deg);
+}
+.unlocked:before {
+  bottom: 130%;
+  left: 31%;
+  margin-left: -11.5px;
+  transform: rotate(-45deg);
+}
+.unlocked,
+.unlocked:before {
+  border-color: #fad176;
+}
+.unlocked:after {
+  background: #fad176;
+}
+/* Unlocked Hover */
+.unlocked:hover {
+  transform: scale(0.7) rotate(3deg);
+}
+.unlocked:hover:before {
+  height: 10px;
+  left: 40%;
+  bottom: 124%;
+  transform: rotate(-30deg);
 }
 
 /* Dynamic styles and transitions */

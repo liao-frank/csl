@@ -1,8 +1,12 @@
+<span class="lock"></span>
 <div class="container">
 	<% include partials/_toast_list.ejs %>
 	<header>
 		<% include partials/_header.ejs %>
-		<div class="main-message"></div>
+		<div class="main-message">
+			<h1 class="header"></h1>
+			<p class="sun-time sun-time-night no-initial-transition"></p>
+		</div>
 		<% include partials/_csl_environment.ejs %>
 	</header>
 	<% include partials/_widget_list.ejs %>

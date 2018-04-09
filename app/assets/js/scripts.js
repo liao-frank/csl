@@ -39,7 +39,7 @@ socket.on("connected", function() {
 		tomorrow.setDate(now.getDate() + 1);
 		tomorrow.setHours(5);
 		tomorrow.setMinutes(30);
-		window.update_sun_times = queueAction(() => {
+		queueAction(() => {
 			log('updating sun times...');
 			global_socket.emit('get_sun_times', {});
 		}, tomorrow - now);
@@ -50,7 +50,6 @@ socket.on("connected", function() {
 			start_time = hourly_forecast && hourly_forecast.start_time && new Date(hourly_forecast.start_time),
 			end_time = hourly_forecast && hourly_forecast.end_time && new Date(hourly_forecast.end_time),
 			now = new Date();
-		console.log(hourly_forecast);
 		if (hourly_forecast.err) log(err, hourly_forecast);
 		else if (!forecast || !start_time || !end_time || (end_time < now)) {
 			log(`'get_hourly_forecast' event received w/ bad data\n`, hourly_forecast);
@@ -63,21 +62,17 @@ socket.on("connected", function() {
 					time_diff = time - now;
 				// render now
 				if (time_diff < 0 && time_diff > -3600000) {
-					console.log(`activated current weather`, weather);
 					activateWeather(weather);
 				}
 				// queue all other forecasts
 				else if (time_diff > 0) {
-					log(`queued weather activation in ${time_diff}`, weather);
 					queueAction(() => {
-						log(`activating weather ${weather}`);
 						activateWeather(weather);
 					}, time_diff);
 				}
 			}
 			// queue forecast update
-			log(`queued hourly forecast update in ${end_time.getTime() - now.getTime() + 600000}`);
-			window.update_hourly_forecast = queueAction(() => {
+			queueAction(() => {
 				log('updating hourly forecast...');
 				global_socket.emit('get_hourly_forecast', {});
 			}, end_time.getTime() - now.getTime() + 600000);
@@ -145,7 +140,7 @@ function activateWeather(forecast) {
 	// if not precipitation, check cloudiness
 	else {
 		// if cloudy, not partly, overcast
-		if (forecast.match(/Cloud/i) && !forecast.match(/Part/i)) $('.weather-overcast').addClass('weather-active');
+		if (forecast.match(/Cloud/i) && !forecast.match(/Part/i) && !forecast.match(/Most/i)) $('.weather-overcast').addClass('weather-active');
 		else if (forecast.match(/Cloud/i)) $('.clouds').addClass('weather-active');
 	}
 }
