@@ -4,8 +4,8 @@ catch(err) { MongoModel = require( require('path').resolve() + '/MongoRecord.js'
 let request = require('request');
 
 // define record for queries
-class PowerBuildingRecord extends MongoModel { }
-PowerBuildingRecord.collection_name = 'PowerBuilding';
+class LivingBuildingRecord extends MongoModel { }
+LivingBuildingRecord.collection_name = 'LivingBuilding';
 
 function dateToString(unit, date) {
 	let days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -23,7 +23,7 @@ function dateToString(unit, date) {
 	}
 }
 
-class PowerBuilding {
+class LivingBuilding {
 	constructor() {
 		// this.power_building = {
 		// 	label <String>: {
@@ -166,7 +166,7 @@ class PowerBuilding {
 	}
 	// retrieve data from database
 	_retrieveRecord(label, callback) {
-		PowerBuildingRecord.find({ label: label }, callback);
+		LivingBuildingRecord.find({ label: label }, callback);
 	}
 	// request data from the internets
 	_requestData(label, options, callback) {
@@ -197,11 +197,11 @@ class PowerBuilding {
 					data: data,
 					updated_at: new Date()
 				};
-				PowerBuildingRecord.findAndUpdate({ label: label }, new_record,
+				LivingBuildingRecord.findAndUpdate({ label: label }, new_record,
 					(err, result) => {
 						if (err) callback(err, null);
 						else if (result.n == 0) {
-							PowerBuildingRecord.new(new_record, callback);
+							LivingBuildingRecord.new(new_record, callback);
 						}
 						else this._retrieveRecord(label, callback);
 					}
@@ -211,13 +211,13 @@ class PowerBuilding {
 	}
 }
 
-let power_building = new PowerBuilding();
+let living_building = new LivingBuilding();
 // should request solar energy production
-// power_building._requestData('solar_energy_production', {}, (err, data) => {
+// living_building._requestData('solar_energy_production', {}, (err, data) => {
 // 	console.log(err, data);
 // });
 // should request energy consumption
-// power_building._requestData('energy_consumption', {}, (err, data) => {
+// living_building._requestData('energy_consumption', {}, (err, data) => {
 // 	console.log(err, data);
 // });
 
@@ -230,19 +230,19 @@ let power_building = new PowerBuilding();
 // 		global.mongoDB = client;
 // 		// DATABASE TEST SUITE
 // 		// should update records
-// 		// power_building._updateRecord('solar_energy_production', {}, (err, record) => {
+// 		// living_building._updateRecord('solar_energy_production', {}, (err, record) => {
 // 		// 	console.log(err, record);
 // 		// });
-// 		// power_building._updateRecord('energy_consumption', {}, (err, record) => {
+// 		// living_building._updateRecord('energy_consumption', {}, (err, record) => {
 // 		// 	console.log(err, record);
 // 		// });
 // 		// should get data
-// 		// power_building.getData('energy_consumption', {}, (err, record) => {
+// 		// living_building.getData('energy_consumption', {}, (err, record) => {
 // 		// 	console.log(err, record);
-// 		// 	power_building.getData('energy_consumption', {}, (err, record) => {
+// 		// 	living_building.getData('energy_consumption', {}, (err, record) => {
 // 		// 		console.log(err, record);
 // 		// 	});
 // 		// });
 // 	}
 // });
-module.exports = power_building;
+module.exports = living_building;
