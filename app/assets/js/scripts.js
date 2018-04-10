@@ -2,7 +2,7 @@ let	socket = io(window.location.pathname),
 	global_socket = io('/');
 socket.on("connected", function() {
 	let opts = socket.io.opts;
-	console.log(`${ opts.secure ? "Secure" : "Non-secure" } socket connection established at "${ opts.hostname + opts.path }" on port ${ opts.port }.`);
+	log(`${ opts.secure ? "Secure" : "Non-secure" } socket connection established at "${ opts.hostname + opts.path }" on port ${ opts.port }.`);
 });
 // DEFINE GLOBAL SOCKET EVENTS
 (function() {

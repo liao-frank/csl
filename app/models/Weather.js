@@ -33,14 +33,16 @@ class Weather {
 	getSunTimes(callback) {
 		let sun_times = this.weather.sun_times;
 		// if sun times exist, check up-to-date
-		if (sun_times) {
+		if (sun_times == undefined) {
 			// if up-to-date, callback
 			if (this._checkSuntimes(sun_times)) callback(null, sun_times);
 			// if not up-to-date, update and callback
-			else this._updateSunTimes((err, sun_times) => {
-				if (!err && sun_times) this.weather.sun_times = sun_times;
-				callback(err, sun_times);
-			});
+			else {
+				this._updateSunTimes((err, sun_times) => {
+					if (!err && sun_times) this.weather.sun_times = sun_times;
+					callback(err, sun_times);
+				});
+			}
 		}
 		// if weather doesn't exist, retrieve and re-execute
 		else {
@@ -62,6 +64,7 @@ class Weather {
 				year = (t1.getYear() == t2.getYear());
 			return date && month && year;
 		}
+		if (times == null) return false;
 		let	sunrise_time = times.sunrise_time,
 			sunset_time = times.sunset_time,
 			now = new Date();
@@ -130,7 +133,8 @@ class Weather {
 				minutes = parseInt(numbers[1]),
 				return_date = new Date();
 
-			return_date.setHours(hours);
+			// TODO add moment.js to account for timezone and daylight savings GMT -> EDT
+			return_date.setHours(hours + 5);
 			return_date.setMinutes(minutes);
 			return_date.setSeconds(0);
 			return return_date;
@@ -142,7 +146,7 @@ class Weather {
 
 	getHourlyForecast(callback) {
 		// if in memory
-		if (this.weather && this.weather.hourly_forecast) {
+		if (this.weather != undefined) {
 			let hourly_forecast = this.weather.hourly_forecast;
 			// if valid, callback
 			if (this._checkHourlyForecast(hourly_forecast)) callback(null, hourly_forecast);
@@ -173,6 +177,7 @@ class Weather {
 	// check validity of hourly forecast, including up-to-datedness
 	_checkHourlyForecast(hourly_forecast) {
 		let now = new Date();
+		if (!hourly_forecast) return false;
 		if (hourly_forecast.start_time && hourly_forecast.end_time) {
 			if (hourly_forecast.start_time < now && hourly_forecast.end_time > now) {
 				return true;

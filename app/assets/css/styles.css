@@ -111,10 +111,10 @@ button {
 }
 .unlocked,
 .unlocked:before {
-  border-color: #fad176;
+  border-color: #fff;
 }
 .unlocked:after {
-  background: #fad176;
+  background: #fff;
 }
 /* Unlocked Hover */
 .unlocked:hover {

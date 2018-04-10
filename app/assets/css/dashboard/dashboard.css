@@ -326,27 +326,27 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 .csl-environment-space .moon {
 	transform: translate3d(0px, 100px, 0px);
 	-webkit-transform: translate3d(0px, 100px, 0px);
-/*	transform: translate(0px, 100px);
-	-webkit-transform: translate(0px, 100px);*/
+	transform: translate(0px, 100px);
+	-webkit-transform: translate(0px, 100px);
 }
 .csl-environment-space .sun.sun-time-active,
 .csl-environment-space .moon.sun-time-active {
 	transform: translate3d(0px, 0px, 0px);
 	-webkit-transform: translate3d(0px, 0px, 0px);
-/*	transform: translate(0px, 0px);
-	-webkit-transform: translate(0px, 0px);*/
+	transform: translate(0px, 0px);
+	-webkit-transform: translate(0px, 0px);
 }
 .csl-environment-space .weather:not(.csl) {
 	transform: translate3d(-15px, 0px, 0px);
 	-webkit-transform: translate3d(-15px, 0px, 0px);
-/*	transform: translate(-15px, 0px);
-	-webkit-transform: translate(-15px, 0px);*/
+	transform: translate(-15px, 0px);
+	-webkit-transform: translate(-15px, 0px);
 }
 .csl-environment-space .weather.weather-active:not(.csl) {
 	transform: translate3d(0px, 0px, 0px);
 	-webkit-transform: translate3d(0px, 0px, 0px);
-/*	transform: translate(0px, 0px);
-	-webkit-transform: translate(0px, 0px);*/
+	transform: translate(0px, 0px);
+	-webkit-transform: translate(0px, 0px);
 }
 .csl-environment-space .precipitation {
 	animation-name: precipitation;
@@ -391,10 +391,14 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	0%, 100% {
 		transform: translate3d(0px, -3px, 0px);
 		-webkit-transform: translate3d(0px, -3px, 0px);
+		transform: translate(0px, -3px);
+		-webkit-transform: translate(0px, -3px);
 	}
 	50% {
 		transform: translate3d(0px, 3px, 0px);
 		-webkit-transform: translate3d(0px, 3px, 0px);
+		transform: translate(0px, 3px);
+		-webkit-transform: translate(0px, 3px);
 	}
 }
 @keyframes spin {
