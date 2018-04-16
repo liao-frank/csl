@@ -10,6 +10,12 @@
 		v-bind:editable="editable"
 		v-on:remove="confirmDelete(index)"
 		v-on:edit="startEdit($event)"></widget>
+	<li class="widget-block"
+		v-if="editable"
+		key="widget-space-add">
+		<div class="widget-space widget-space-add icon"
+			v-on:click="startAdd()"></div>
+	</li>
 	<form
 		class="pure-form pure-form-aligned"
 		v-if="editing_widget"
@@ -150,11 +156,14 @@
 					});
 				}
 			},
+			startAdd() {
+				this.editing_widget = {};
+			},
 			startEdit(widget) {
 				this.editing_widget = widget;
 			},
 			stopEdit() {
-				if (window.confirm('Are you sure you want to discard your edits?')) {
+				if (window.confirm('Are you sure you want to discard your changes?')) {
 					this.editing_widget = null;
 				}
 			},

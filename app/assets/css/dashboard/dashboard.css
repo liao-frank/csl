@@ -279,6 +279,21 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	transform: scale(1.1);
 	-webkit-transform: scale(1.1);
 }
+.widget-list .widget-block .widget-space.widget-space-add {
+	background-color: rgba(255, 255, 255, 0.6);
+	background-image: url('/images/icons/plus-darkgray.svg');
+	background-size: 48px;
+	border: dashed 2px #6f7e91;
+	cursor: pointer;
+
+	transition: all 0.15s ease;
+	-webkit-transition: all 0.15s ease;
+}
+.widget-list .widget-block .widget-space.widget-space-add:hover {
+	background-color: rgba(255, 255, 255, 0.8);
+	background-image: url('/images/icons/plus-darkgray.svg');
+	background-size: 56px;
+}
 /* widget list Vue.js transitions */
 .widget-list-enter-active, .widget-list-leave-active {
 	transition: all 0.4s ease;
