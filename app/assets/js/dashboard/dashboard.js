@@ -11,6 +11,8 @@ let current_category = {
 			alertToast('failure', `unable to retrieve category '${current_category.category}'`);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
+			// remove listeners for old widgets
+			socket.off('get_data');
 			let	dashboard = data.dashboard;
 			// render widgets
 			renderWidgets(dashboard.widgets);
@@ -28,12 +30,14 @@ let current_category = {
 			alertToast('failure', `unable to update category '${current_category.category}'`);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
+			// remove listeners for old widgets
+			socket.off('get_data');
 			let	dashboard = data.dashboard;
 			// render widgets
 			renderWidgets(dashboard.widgets);
 			// render main message
 			renderHeader(dashboard.title, dashboard.message);
-			alertToast('success', 'successfully updated dashboard')
+			alertToast('success', 'successfully updated dashboard');
 		} else {
 			log(`'update_dashboard' event received w/ bad data\n`, data);
 		}
@@ -69,6 +73,8 @@ let current_category = {
 		$(".lock").on('click', function() {
 			$(this).toggleClass('unlocked');
 			widget_list.editable = !widget_list.editable;
+			widget_list.editing_widget = null;
+			widget_list.adding_widget = null;
 		});
 	});
 	function addWidget(widget, index) {
@@ -112,11 +118,13 @@ let current_category = {
 	function renderWidgets(widgets) {
 		if (!widgets) return;
 		else {
+			// remove old widgets
 			for (let i = 0; i < widget_list.widgets.length; i++) {
 				setTimeout(() => {
 					widget_list.widgets.pop();
 				}, 0);
 			}
+			// add new widgets
 			setTimeout(() => {
 				widget_list.widgets = widgets.filter(widget => validWidget(widget));
 			}, 0);
@@ -161,8 +169,6 @@ function alertToast(type, message) {
 function requestDashboard(category_obj) {
 	// request new widgets
 	socket.emit('get_dashboard', category_obj);
-	// remove listeners for old widgets
-	socket.off('get_data');
 }
 const generator_transition = 'all 0.7s ease';
 function activateGenerator(category=current_category.category) {

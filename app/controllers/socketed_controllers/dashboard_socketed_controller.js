@@ -6,6 +6,8 @@ class DashboardSocketedController extends DashboardController {
 		this._dashboard = require(this.path + '/app/models/Dashboard.js');
 		// power_building provides data given a label
 		this.living_building = require(this.path + '/app/models/LivingBuilding.js');
+		// request-er
+		this.request = cli.require('request');
 	}
 
 	dashboard_socket(io, socket) {
@@ -56,15 +58,33 @@ class DashboardSocketedController extends DashboardController {
 		});
 		// on get data
 		socket.on('get_data', (obj) => {
-			// let	label = obj.label,
-			// 	options = obj.options;
-
-			// this.living_building.getData(label, options, (err, data) => {
-			// 	socket.emit('get_data', {
-			// 		label: label,
-			// 		data: data
-			// 	});
-			// });
+			let widget = obj.widget;
+			try {
+				if (widget.data_url.match(/http/)) {
+					let options = {
+						url: widget.data_url,
+						auth: {
+							user: 'administrator', password: 'cbpdadmin1!@34'
+						},
+						rejectUnauthorized: false
+					};
+					this.request(options, function (err, res, body) {
+						if (err) console.log(err);
+						else socket.emit('get_data', {
+							widget: {
+								title: widget ? widget.title : null,
+								label: widget ? widget.label : null,
+								data: JSON.parse(body)
+							}
+						});
+					});
+				}
+				else if (widget.data_url.match(/living_building/)) {
+					// TODO
+				}
+			} catch(err) {
+				console.log(err);
+			}	
 		});
 	}
 

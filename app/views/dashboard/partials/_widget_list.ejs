@@ -8,7 +8,45 @@
 		v-bind:key="widget.title"
 		v-bind:widget="widget"
 		v-bind:editable="editable"
-		v-on:remove="confirmDelete(index)"></widget>
+		v-on:remove="confirmDelete(index)"
+		v-on:edit="startEdit($event)"></widget>
+	<form
+		class="pure-form pure-form-aligned"
+		v-if="editing_widget"
+		key="widget-form">
+		<div class="icon icon-close"
+			v-on:click="stopEdit()"></div>
+		<div class="pure-control-group">
+			<label for="title">Title</label>
+			<input id="title" type="text" placeholder="Title"
+				v-bind:value="editing_widget ? editing_widget.title : ''">
+		</div>
+		<div class="pure-control-group">
+			<label for="label">Label</label>
+			<input id="label" type="text" placeholder="Label"
+				v-bind:value="editing_widget ? editing_widget.label : ''">
+		</div>
+		<div class="pure-control-group">
+			<label for="data_url">Data Url</label>
+			<input id="data_url" type="text" placeholder="Data Url"
+				v-bind:value="editing_widget ? editing_widget.data_url : ''">
+		</div>
+		<div class="pure-control-group">
+			<label for="template">Template</label>
+			<textarea id="template" placeholder="Template"
+				v-bind:value="editing_widget ? editing_widget.template : ''"></textarea>
+		</div>
+		<div class="pure-control-group">
+			<label for="data_handler">Data Handler</label>
+			<textarea id="data_handler" placeholder="Data Handler (function)"
+				v-bind:value="editing_widget ? editing_widget.data_handler : ''"></textarea>
+		</div>
+		<div class="pure-control-group">
+			<label>&nbsp;</label>
+			<div class="pure-button pure-button-primary"
+				v-on:click="saveEdit()">Save</div>
+		</div>
+	</form>
 </transition-group>
 <script>
 	// the Widget component
@@ -27,7 +65,8 @@
 			<ul class="widget-options"
 			v-if="edit_mode"
 			@mouseleave="toggleEditMode(false)">
-				<li><a>
+				<li><a
+				v-on:click="$emit('edit', widget)">
 					<span class="icon icon-edit"></span>Edit
 				</a></li>
 				<li><a
@@ -52,8 +91,25 @@
 				else this.edit_mode = !this.edit_mode;
 			},
 			render: function() {
+				let widget = this.widget,
+					$template = $(this.widget.template);
+				// if data, query data
+				if (widget.data_url && widget.data_handler) {
+					console.log('requesting data');
+					socket.emit('get_data', {
+						widget: widget
+					});
+					socket.on('get_data', (obj) => {
+						console.log('got data', obj);
+						if (obj.widget.title == widget.title) {
+							console.log('running handler');
+							eval(widget.data_handler)($template, obj.widget.data);
+						}
+					});
+				}
+				// add template to widget
 				let $contents = $(this.$el).find('.widget-contents');
-				$contents.html(this.widget.template);
+				$contents.append($template);
 			}
 		},
 		mounted: function() {
@@ -64,7 +120,9 @@
 		el: '.widget-list',
 		data: {
 			widgets: [],
-			editable: false
+			editable: true,
+			editing_widget: null,
+			adding_widget: null
 		},
 		components: {
 			widget: Widget
@@ -91,6 +149,67 @@
 						}
 					});
 				}
+			},
+			startEdit(widget) {
+				this.editing_widget = widget;
+			},
+			stopEdit() {
+				if (window.confirm('Are you sure you want to discard your edits?')) {
+					this.editing_widget = null;
+				}
+			},
+			saveEdit() {
+				let updated_widget = this.compileForm(),
+					new_widgets = this.widgets.slice(0);
+				// if valid update, replace widget in new_widgets
+				if (updated_widget) {
+					let found = false;
+					new_widgets.forEach((widget, index) => {
+						if (widget.title == updated_widget.title) {
+							found = true;
+							new_widgets[index] = updated_widget;
+						}
+					});
+					if (!found) new_widgets.push(updated_widget);
+					socket.emit('update_dashboard', {
+						dashboard: {
+							category: current_category.category,
+							widgets: new_widgets
+						}
+					});
+					// close editor
+					this.editing_widget = null;
+				}
+			},
+			compileForm() {
+				let	$form = $(this.$el).find('form'),
+					failed = false;
+				let title = $form.find('#title').val();
+				let label = $form.find('#label').val();
+				if (!title) { alertToast('failure', 'title cannot be empty'); failed = true;}
+				if (!label) { alertToast('failure', 'label cannot be empty'); failed = true;}
+				let data_url = $form.find('#data_url').val() || null;
+				let template;
+				try {
+					template = $form.find('#template').val();
+					$(template);
+					if (!template) { alertToast('failure', 'template cannot be empty'); failed = true; }
+				} catch(err) { alertToast('failure', 'error while parsing template'); console.log(err); failed = true; }
+				let data_handler;
+				try {
+					data_handler = $form.find('#data_handler').val();
+					if (data_handler && typeof eval(data_handler) != 'function') {
+						alertToast('failure', 'invalid format of data handler');
+						failed = true;
+					}
+				} catch(err) { alertToast('failure', 'error while parsing data handler'); console.log(err); failed = true; }
+				return failed ? null : {
+					title: title,
+					label: label,
+					data_url: data_url,
+					template: template,
+					data_handler: data_handler
+				};
 			}
 		}
 	});

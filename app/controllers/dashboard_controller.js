@@ -15,6 +15,7 @@ class DashboardController extends BeanController {
 			<script type="text/javascript" src="/js/dashboard/dashboard.js"></script>`,
 			__stylesheet_tags: `
 			<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
+			<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
 			<link rel="stylesheet" type="text/css" href="/css/styles.css">
 			<link rel="stylesheet" type="text/css" href="/css/dashboard/dashboard.css">`
 		});
