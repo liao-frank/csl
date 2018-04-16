@@ -33,7 +33,7 @@ class Weather {
 	getSunTimes(callback) {
 		let sun_times = this.weather.sun_times;
 		// if sun times exist, check up-to-date
-		if (sun_times == undefined) {
+		if (sun_times != undefined) {
 			// if up-to-date, callback
 			if (this._checkSuntimes(sun_times)) callback(null, sun_times);
 			// if not up-to-date, update and callback
@@ -338,9 +338,9 @@ let weather = new Weather();
 // 		// 	console.log(err, forecast);
 // 		// });
 // 		// should be able to get hourly forecast
-// 		weather.getHourlyForecast((err, forecast) => {
-// 			console.log(err, forecast);
-// 		});
+// 		// weather.getHourlyForecast((err, forecast) => {
+// 		// 	console.log(err, forecast);
+// 		// });
 // 	}
 // });
 
