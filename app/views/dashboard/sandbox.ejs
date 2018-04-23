@@ -1,41 +1,251 @@
+<script>
+	socket = io('/dashboard');
+</script>
 <div class="container">
 	<ul class="widget-list">
 		<li class="widget-block">
 			<div class="widget-space">
 				<div class="widget-contents">
-					<div class="content-global" style="
-						position: absolute;
-						top: 47.5%; left: 50%;
-						transform: translate(-50%, -50%);
-						-webkit-transform: translate(-50%, -50%);
-						text-align: center;
-						font-family: Open Sans, sans-serif;
-					">
+					<div class="animation fill-space">
+						<span class="stat">---</span><span>&nbsp;kWh is enough to...</span>
+						<h3 class="header" style="margin-top: 5px;">
+							wash <span class="loads">---</span> of clothes.
+						</h3>
 						<div style="
-							width: 100%;
-							font-size: 14px;
-							text-transform: uppercase;
-							letter-spacing: 2px;
-						"> </div>
-						<div style="
-							width: 100%;
-							margin: 0 0 10% 0;
-							font-size: 60px;
-							font-family: Roboto, sans-serif;
-							font-weight: lighter;
-							line-height: 60px;
-						">
-							<span class="temperature">35</span><span style="
-								font-size: 24px;
-								vertical-align: text-top;
-							">°F</span>
+							width: fit-content;
+							margin: 0 auto;
+							padding-right: 10px;">
+							<style>
+								.clothes {
+									transition: all 0.4s ease;
+									-webkit-transition: all 0.4s ease;
+								}
+								.clothes.blue { filter: hue-rotate(180deg); }
+								.clothes.green { filter: hue-rotate(90deg); }
+								.clothes.purple { filter: hue-rotate(200deg); }
+								.clothes.red { filter: hue-rotate(300deg); }
+								.clothes-pile-enter, .clothes-pile-leave-to {
+									opacity: 0;
+								}
+								.clothes-pile-leave-active {
+									position: absolute;
+								}
+								.clothes-pile-move {
+									transition: all 0.4s ease;
+									-webkit-transition: all 0.4s ease;
+								}
+								.washing-machine .water {
+									transform-origin: 50% 45.842%;
+									animation-name: wash;
+									animation-duration: 3s;
+									animation-iteration-count: infinite;
+									animation-timing-function: ease;
+								}
+								@keyframes wash {
+									0% {
+										transform: rotate(-15deg);
+										-webkit-transform: rotate(-15deg);
+									}
+									50% {
+										transform: rotate(15deg);
+										-webkit-transform: rotate(15deg);
+									}
+									100% {
+										transform: rotate(-15deg);
+										-webkit-transform: rotate(-15deg);
+									}
+								}
+							</style>
+							<transition-group
+								name="clothes-pile"
+								tag="div"
+								class="clothes-pile"
+								style="
+									position: relative;
+									display: inline-flex;
+									flex-direction: column;
+									width: 50px;"
+								@before-leave="retainPosition">
+								<div
+									key="detergent"
+									class="detergent icon"
+									style="
+										position: absolute;
+										top: -45px; left: 0;
+										width: 100%; height: 45px;
+										background-image: url('/images/detergent.svg');"></div>
+								<clothes
+									v-for="(clothes, index) in stack"
+									v-bind:key="index"
+									v-bind:clothes="clothes"
+									v-bind:class="clothes.color"
+									class="clothes icon"
+									style="
+										width: 100%; height: 12px;
+										background-image: url('/images/clothes.svg');"></clothes>
+							</transition-group>
+							<script>
+								let	$stat = $('.stat').last(),
+									$loads = $('.loads').last();
+								socket.on('get_data', (obj) => {
+									if (obj.widget && obj.widget.title == 'energy_production') {
+										if (obj.err) log('error loading widget', obj);
+										else {
+											// change text
+											let output = prettyNumber(Math.round(obj.widget.data));
+											$stat.text(output || '---');
+											let loads_output = Math.round(obj.widget.data) * 12;
+											if (loads_output < 4000) {
+												$loads.text( loads_output + ' lbs' );
+											} else {
+												$loads.text( (loads_output / 2000).toFixed(1) + ' tons' );
+											}
+										}
+									}
+								});
+								let clothes = {
+									template: `<div></div>`,
+									props: ['clothes']
+								};
+								let clothes_pile = new Vue({
+									el: '.clothes-pile',
+									data: {
+										stack: [
+											{ color: 'yellow' },
+											{ color: 'red' }
+										]
+									},
+									components: {
+										clothes: clothes
+									},
+									methods: {
+										retainPosition: function(el) {
+											const {marginLeft, marginTop, width, height} = window.getComputedStyle(el);
+											el.style.left = `${el.offsetLeft - parseFloat(marginLeft, 10)}px`;
+											el.style.top = `${el.offsetTop - parseFloat(marginTop, 10)}px`;
+											el.style.width = width;
+											el.style.height = height;
+										}
+									}
+								});
+								function prettyNumber(n) {
+									if (!n) return null;
+									let	output = n.toString().split('').reverse(),
+										start = 3;
+									while (start < output.length) {
+										output.splice(start, 0, ',');
+										start += 4;
+									}
+									return output.reverse().join('');
+								}
+							</script>
+							<svg class="washing-machine"
+								viewBox="0 0 1763.15 2411.5"
+								style="width: 100px;
+									vertical-align: bottom;">
+								<g>
+									<g>
+										<rect width="1763.15" height="452.5" style="fill: #405f79"/>
+										<polygon points="0 452.5 0 461.78 0 471.05 1763.15 471.05 1763.15 461.78 1763.15 452.5 0 452.5" style="fill: #809fa3"/>
+									</g>
+									<circle cx="881.58" cy="1105.47" r="398.81" style="fill: #405f79"/>
+									<g class="water">
+										<path d="M1335.45,1194.05s-95,41.39-138.18-38c-17.25,31.7-42.74,44.14-67.16,47.66-24.41-3.52-49.9-16-67.15-47.66-19.57,36-49.74,47.15-76.91,48.63l-.43,0-2,.08-1.47,0-1.25,0H978l-1.25,0-1.47,0-2-.08-.43,0c-27.16-1.48-57.34-12.67-76.9-48.63-19.61,36-49.88,47.2-77.09,48.64-27.21-1.44-57.48-12.6-77.09-48.64-19.56,36-49.74,47.15-76.9,48.63l-.43,0-2,.08-1.47,0-1.25,0h-2.83l-1.25,0-1.47,0-2-.08-.43,0c-27.17-1.48-57.34-12.67-76.91-48.63-43.21,79.41-138.17,38-138.17,38-42.39,80.9,138.17,228.61,138.17,228.61s10,70.73,49.45,24.52c39.47,46.21,88,38.94,88,38.94s34,58.17,71.63,15.57c37.68,42.6,105.9,51.39,105.9,51.39s40.73,14.28,80.2-31.93c39.47,46.21,94.21-45.16,94.21-45.16s33.39,18.37,67.75-18.68c34.36,37,65.4-34.65,65.4-34.65S1377.84,1275,1335.45,1194.05Z" style="fill: #70dfea"/>
+										<path d="M727.11,1062a20.21,20.21,0,1,1-20.21-20.2A20.21,20.21,0,0,1,727.11,1062Z" style="fill: #70dfea"/>
+										<circle cx="989.21" cy="1091.5" r="21.76" transform="translate(-300.37 1803.47) rotate(-76.72)" style="fill: #70dfea"/>
+										<circle cx="937.41" cy="974.43" r="12.43" transform="translate(-226.33 1662.89) rotate(-76.72)" style="fill: #70dfea"/>
+										<path d="M765.84,948.58a16,16,0,1,1-16-16A16,16,0,0,1,765.84,948.58Z" style="fill: #70dfea"/>
+										<path d="M1095.92,961.48a25.39,25.39,0,1,1-25.38-25.38A25.39,25.39,0,0,1,1095.92,961.48Z" style="fill: #70dfea"/>
+										<path d="M853.5,1116.36A15.54,15.54,0,1,1,838,1100.83,15.54,15.54,0,0,1,853.5,1116.36Z" style="fill: #70dfea"/>
+										<path d="M882.5,875A15.54,15.54,0,1,1,867,859.44,15.54,15.54,0,0,1,882.5,875Z" style="fill: #70dfea"/>
+									</g>
+									<path d="M1298.28,688.77a587.55,587.55,0,1,0,126.28,187.31A587.26,587.26,0,0,0,1298.28,688.77Zm-416.7,979.51c-310.34,0-562.81-252.48-562.81-562.81S571.24,542.66,881.58,542.66s562.81,252.47,562.81,562.81S1191.91,1668.28,881.58,1668.28Z" style="fill: #405f79"/>
+									<g>
+										<path d="M1424.56,876.08a591.16,591.16,0,1,0,46.32,229.39A587.35,587.35,0,0,0,1424.56,876.08Z" style="fill: none"/>
+										<rect y="2128.63" width="1763.15" height="282.87" style="fill: #f2f2f2"/>
+										<rect y="2122.67" width="1763.15" height="5.96" style="fill: #8ea5ad"/>
+										<rect y="2116.71" width="1763.15" height="5.96" style="fill: #8ea5ad"/>
+									</g>
+									<rect x="1383.7" y="2164.5" width="311.42" height="213.81" rx="15.9" ry="15.9" style="fill: #405f79"/>
+									<rect x="97.89" y="102.1" width="493.16" height="201.06" rx="15.9" ry="15.9" style="fill: #303b51"/>
+									<g>
+										<g>
+											<path d="M1680.46,214.48a115.71,115.71,0,1,1-115.7-115.7A115.7,115.7,0,0,1,1680.46,214.48Z" style="fill: #466f7b"/>
+											<path d="M1564.76,338.79a124.31,124.31,0,1,1,124.31-124.31A124.45,124.45,0,0,1,1564.76,338.79Zm0-231.4a107.09,107.09,0,1,0,107.09,107.09A107.21,107.21,0,0,0,1564.76,107.39Z" style="fill: #809fa3"/>
+										</g>
+										<g>
+											<path d="M1691.31,205.59H1705a139.88,139.88,0,0,0-34.78-83.95l-9.64,9.64A125.75,125.75,0,0,1,1691.31,205.59Z" style="fill: #d22a2a"/>
+											<path d="M1469,131.28l-9.64-9.64a139.88,139.88,0,0,0-34.78,84h13.64A125.75,125.75,0,0,1,1469,131.28Z" style="fill: #4492ce"/>
+											<path d="M1648,118.71l9.64-9.64a139.85,139.85,0,0,0-84-34.78V87.92A125.79,125.79,0,0,1,1648,118.71Z" style="fill: #d22a2a"/>
+											<path d="M1555.87,87.92V74.29a139.88,139.88,0,0,0-84,34.78l9.64,9.64A125.77,125.77,0,0,1,1555.87,87.92Z" style="fill: #4492ce"/>
+											<path d="M1573.64,341v13.63a139.84,139.84,0,0,0,84-34.77l-9.64-9.64A125.78,125.78,0,0,1,1573.64,341Z" style="fill: #d22a2a"/>
+											<path d="M1438.2,223.37h-13.64a139.94,139.94,0,0,0,34.78,84l9.64-9.64A125.78,125.78,0,0,1,1438.2,223.37Z" style="fill: #4492ce"/>
+											<path d="M1691.31,223.37a125.78,125.78,0,0,1-30.78,74.32l9.64,9.64a139.94,139.94,0,0,0,34.78-84Z" style="fill: #d22a2a"/>
+											<path d="M1481.55,310.26l-9.64,9.64a139.87,139.87,0,0,0,84,34.77V341A125.76,125.76,0,0,1,1481.55,310.26Z" style="fill: #4492ce"/>
+										</g>
+									</g>
+									<g>
+										<g>
+											<path d="M1365,214.48a98.64,98.64,0,1,1-98.64-98.63A98.63,98.63,0,0,1,1365,214.48Z" style="fill: #466f7b"/>
+											<path d="M1266.35,321.72A107.24,107.24,0,1,1,1373.6,214.48,107.36,107.36,0,0,1,1266.35,321.72Zm0-197.26a90,90,0,1,0,90,90A90.12,90.12,0,0,0,1266.35,124.46Z" style="fill: #809fa3"/>
+										</g>
+										<g>
+											<path d="M1374.81,206.87h11.69a119.92,119.92,0,0,0-29.81-72l-8.26,8.26A107.77,107.77,0,0,1,1374.81,206.87Z" style="fill: #d22a2a"/>
+											<path d="M1184.27,143.17l-8.26-8.26a119.85,119.85,0,0,0-29.8,72h11.68A107.83,107.83,0,0,1,1184.27,143.17Z" style="fill: #4492ce"/>
+											<path d="M1337.66,132.4l8.26-8.26a119.91,119.91,0,0,0-72-29.8V106A107.8,107.8,0,0,1,1337.66,132.4Z" style="fill: #d22a2a"/>
+											<path d="M1258.74,106V94.34a119.94,119.94,0,0,0-72,29.8l8.26,8.26A107.86,107.86,0,0,1,1258.74,106Z" style="fill: #4492ce"/>
+											<path d="M1274,322.94v11.69a119.92,119.92,0,0,0,72-29.81l-8.26-8.26A107.74,107.74,0,0,1,1274,322.94Z" style="fill: #d22a2a"/>
+											<path d="M1157.89,222.1h-11.68a119.82,119.82,0,0,0,29.8,72l8.26-8.26A107.8,107.8,0,0,1,1157.89,222.1Z" style="fill: #4492ce"/>
+											<path d="M1374.81,222.1a107.74,107.74,0,0,1-26.38,63.69l8.26,8.26a119.89,119.89,0,0,0,29.81-72Z" style="fill: #d22a2a"/>
+											<path d="M1195.05,296.56l-8.27,8.26a120,120,0,0,0,72,29.81V322.94A107.74,107.74,0,0,1,1195.05,296.56Z" style="fill: #4492ce"/>
+										</g>
+									</g>
+									<g>
+										<g>
+											<path d="M762,189.78c0,21.81-10.9,39.48-24.35,39.48s-24.35-17.67-24.35-39.48,10.91-39.48,24.35-39.48S762,168,762,189.78Z" style="fill: #303b51"/>
+											<path d="M762,180.51c0,21.8-10.9,39.48-24.35,39.48s-24.35-17.68-24.35-39.48S724.24,141,737.68,141,762,158.7,762,180.51Z" style="fill: #809fa3"/>
+										</g>
+										<g>
+											<ellipse cx="831.92" cy="189.78" rx="24.35" ry="39.48" style="fill: #303b51"/>
+											<path d="M856.27,180.51c0,21.8-10.9,39.48-24.35,39.48s-24.34-17.68-24.34-39.48S818.48,141,831.92,141,856.27,158.7,856.27,180.51Z" style="fill: #809fa3"/>
+										</g>
+										<g>
+											<path d="M950.51,189.78c0,21.81-10.9,39.48-24.34,39.48s-24.35-17.67-24.35-39.48,10.9-39.48,24.35-39.48S950.51,168,950.51,189.78Z" style="fill: #303b51"/>
+											<path d="M950.51,180.51c0,21.8-10.9,39.48-24.34,39.48s-24.35-17.68-24.35-39.48S912.72,141,926.17,141,950.51,158.7,950.51,180.51Z" style="fill: #809fa3"/>
+										</g>
+										<g>
+											<path d="M1044.75,189.78c0,21.81-10.89,39.48-24.34,39.48s-24.35-17.67-24.35-39.48,10.9-39.48,24.35-39.48S1044.75,168,1044.75,189.78Z" style="fill: #303b51"/>
+											<path d="M1044.75,180.51c0,21.8-10.89,39.48-24.34,39.48s-24.35-17.68-24.35-39.48S1007,141,1020.41,141,1044.75,158.7,1044.75,180.51Z" style="fill: #809fa3"/>
+										</g>
+									</g>
+									<g>
+										<rect x="633.62" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="678.94" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="724.27" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="769.59" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="814.91" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="860.23" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="905.56" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="950.88" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="996.2" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="1041.52" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+										<rect x="1086.85" y="277.18" width="37.62" height="12.81" style="fill: #fffdfd"/>
+									</g>
+									<g>
+										<path d="M652.19,1648.46a589.32,589.32,0,0,0,738.33-840.27l-834.3,788.72A587.89,587.89,0,0,0,652.19,1648.46Z" style="fill: none"/>
+										<path d="M1111,562.48A589.46,589.46,0,0,0,556.22,1596.91l834.3-788.72A591.74,591.74,0,0,0,1111,562.48Z" style="fill: none"/>
+										<path d="M464.88,1522.17a589.3,589.3,0,1,1,925.64-714l356.62-337.14H0V2116.71H6.38l549.84-519.8A590.25,590.25,0,0,1,464.88,1522.17Z" style="fill: #f2f2f2"/>
+										<path d="M1747.14,471.05,1390.52,808.19a589.3,589.3,0,0,1-834.3,788.72L6.38,2116.71H1763.15V471.05Z" style="fill: #e8e7e7"/>
+									</g>
+									<path d="M319,1.68h896" style="fill: #466f7b"/>
+									<path d="M881.58,542.66c-310.34,0-562.81,252.47-562.81,562.81s252.47,562.81,562.81,562.81,562.81-252.48,562.81-562.81S1191.91,542.66,881.58,542.66Zm0,961.62c-220.26,0-398.81-178.56-398.81-398.81S661.32,706.66,881.58,706.66s398.81,178.55,398.81,398.81S1101.83,1504.28,881.58,1504.28Z" style="fill: #809fa3"/>
+									<g>
+										<path d="M1265.77,1002.22a93.72,93.72,0,0,0-93.73,93.72V1101a93.72,93.72,0,0,0,93.73,93.73h183.71V1002.22Z" style="fill: #809fa3"/>
+										<path d="M1449.48,1002.22v192.51H1265.77A93.72,93.72,0,0,1,1172,1101v-5.06a93.72,93.72,0,0,1,93.73-93.72h183.71m9.27-9.27h-193a103.11,103.11,0,0,0-103,103V1101a103.12,103.12,0,0,0,103,103h193V993Z" style="fill: #405f79"/>
+									</g>
+								</g>
+							</svg>
 						</div>
-						<div style="
-							width: 100%;
-							font-size: 18px;
-							text-transform: uppercase;
-							letter-spacing: 2px;
-						">Outside</div>
 					</div>
 				</div>
 				<script>
@@ -127,13 +337,21 @@
 		<li class="widget-block">
 			<div class="widget-space">
 				<div class="widget-contents">
-					
+					<div class="fill-space did-you-know">	
+						<h3 class="header">Did you know?</h3>
+						<p>
+							The CSL uses as little as <em>20%</em> of its expected energy usage (compared to traditional buildings). That's more than <em>$50,000</em> saved every year!
+						</p>
+						<div class="icon"
+							style="background-image: url('/images/plug-darkgray.svg');
+							background-size: cover;
+							position: absolute;
+							left: 50%; bottom: 15px;
+							width: 100%; height: 32px;
+							transform: translateX(-50%);">
+						</div>
+					</div>
 				</div>
-				<script>
-					(function() {
-						
-					})();
-				</script>
 			</div>
 		</li>
 	</ul>

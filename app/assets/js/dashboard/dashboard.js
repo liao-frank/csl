@@ -7,7 +7,7 @@ let current_category = {
 	socket.on('get_dashboard', (data) => {
 		// check error
 		if (data.err) {
-			log('err');
+			log(`unable to retrieve category '${current_category.category}'`, data.err);
 			alertToast('failure', `unable to retrieve category '${current_category.category}'`);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
@@ -26,7 +26,7 @@ let current_category = {
 	socket.on('update_dashboard', (data) => {
 		// check error
 		if (data.err) {
-			log('err');
+			log(`unable to update category '${current_category.category}'`, data.err);
 			alertToast('failure', `unable to update category '${current_category.category}'`);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {

@@ -20,6 +20,9 @@ h1.header {
 h3.header {
 	letter-spacing: 0.8px;
 }
+h4.header {
+	letter-spacing: 0.7px;
+}
 .container {
 	position: relative;
 	display: block;
@@ -28,9 +31,48 @@ h3.header {
 	margin: 0 auto; padding: 0;
 }
 .icon, .logo {
+	display: inline-block;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: contain;
+}
+.icon-16 {
+	width: 16px; height: 16px;
+}
+.left-arrow-icon {
+	background-image: url('/images/icons/leftarrow-darkgray.svg');
+}
+.right-arrow-icon {
+	background-image: url('/images/icons/rightarrow-darkgray.svg');
+}
+.hover-grow,
+.hover-darken {
+	transition: all 0.15s ease;
+	-webkit-transition: all 0.15s ease;
+}
+.hover-grow-2-1:hover {
+	transform: scale(2);
+	-webkit-transform: scale(2);
+}
+.hover-grow-3-2:hover {
+	transform: scale(1.5);
+	-webkit-transform: scale(1.5);
+}
+.hover-grow-5-4:hover {
+	transform: scale(1.25);
+	-webkit-transform: scale(1.25);
+}
+.hover-grow-11-10:hover {
+	transform: scale(1.1);
+	-webkit-transform: scale(1.1);
+}
+.hover-darken-90:hover {
+	-webkit-filter: brightness(0.9);
+	filter: brightness(0.9);
+}
+.hover-darken-80:hover {
+	-webkit-filter: brightness(0.8);
+	filter: brightness(0.8);
 }
 button {
 	cursor: pointer;

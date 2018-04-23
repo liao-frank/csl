@@ -83,7 +83,7 @@ socket.on("connected", function() {
 $(document).ready(function() {
 	global_socket.emit('get_sun_times', {});
 	global_socket.emit('get_hourly_forecast', {});
-	activateSunTimeDay();
+	// activateSunTimeDay();
 });
 
 // dynamic activation functions

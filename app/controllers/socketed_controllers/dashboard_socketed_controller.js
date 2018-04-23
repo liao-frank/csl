@@ -60,27 +60,13 @@ class DashboardSocketedController extends DashboardController {
 		socket.on('get_data', (obj) => {
 			let widget = obj.widget;
 			try {
-				if (widget.data_url.match(/http/)) {
-					let options = {
-						url: widget.data_url,
-						auth: {
-							user: 'administrator', password: 'cbpdadmin1!@34'
-						},
-						rejectUnauthorized: false
-					};
-					this.request(options, function (err, res, body) {
-						if (err) console.log(err);
-						else socket.emit('get_data', {
-							widget: {
-								title: widget ? widget.title : null,
-								label: widget ? widget.label : null,
-								data: JSON.parse(body)
-							}
-						});
-					});
+				// PI server access
+				if (widget.data_url.match(/https:\/\/128.2.109.159/)) {
+					this._getPiServerData(io, socket, widget);
 				}
+				// Living Building library
 				else if (widget.data_url.match(/living_building/)) {
-					// TODO
+					this._getLivingBuildingData(io, socket, widget);
 				}
 			} catch(err) {
 				console.log(err);
@@ -90,5 +76,79 @@ class DashboardSocketedController extends DashboardController {
 
 	sandbox_socket(io, socket) {
 		
+	}
+
+	_getPiServerData(io, socket, widget) {
+		let options = {
+			url: widget.data_url,
+			auth: {
+				user: 'administrator', password: 'cbpdadmin1!@34'
+			},
+			rejectUnauthorized: false
+		};
+		this.request(options, function (err, res, body) {
+			try {
+				if (err) console.log(err);
+				else socket.emit('get_data', {
+					widget: {
+						title: widget ? widget.title : null,
+						label: widget ? widget.label : null,
+						data: JSON.parse(body)
+					}
+				});
+			} catch(err) {
+				console.log(err);
+			}	
+		});
+	}
+
+	_getLivingBuildingData(io, socket, widget) {
+		let	data_url = widget.data_url,
+			data_label = data_url.match(/#(.+)/)[1],
+			responder = (err, record) => {
+						if (err) console.log(err);
+						else {
+							let total = record.reduce((sum, elem) => { return sum + elem[1] }, 0);
+							socket.emit('get_data', {
+								widget: {
+									title: widget ? widget.title : null,
+									label: widget ? widget.label : null,
+									data_label: data_label,
+									data: total
+								}
+							});
+						}
+					};
+
+		switch(data_label) {
+			case 'weekly_energy_consumption':
+				this.living_building.getData('energy_consumption', {}, responder);
+				break;
+			case 'monthly_energy_consumption':
+				this.living_building.getData('energy_consumption',
+					{ time_duration: 'month' },
+					responder);
+				break;
+			case 'yearly_energy_consumption':
+				this.living_building.getData('energy_consumption',
+					{ time_duration: 'year' },
+					responder);
+				break;
+			case 'weekly_energy_production':
+				this.living_building.getData('solar_energy_production', {}, responder);
+				break;
+			case 'monthly_energy_production':
+				this.living_building.getData('solar_energy_production',
+					{ time_duration: 'month' },
+					responder);
+				break;
+			case 'yearly_energy_production':
+				this.living_building.getData('solar_energy_production',
+					{ time_duration: 'year' },
+					responder);
+				break;
+			default:
+				console.log('bad data label: ' + data_label);
+		}
 	}
 }
