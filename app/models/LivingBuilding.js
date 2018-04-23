@@ -25,7 +25,7 @@ function dateToString(unit, date) {
 
 class LivingBuilding {
 	constructor() {
-		// this.power_building = {
+		// this.living_building = {
 		// 	label <String>: {
 		//		label: String,
 		// 		data: Array[Array[]],
@@ -33,19 +33,21 @@ class LivingBuilding {
 		// 	},
 		//	...
 		// }
-		this.power_building = {};
+		this.living_building = {};
 		this.request_configs = {
 			'energy_consumption': {
 				url: 'http://128.2.109.227:86/Phipps/electricity/trends',
 				request_formatter: function(config, options) {
-					let	url = config.url,
-						time_duration = options.time_duration || 'week';
+					config = Object.assign({}, config);
+					let	time_duration = options.time_duration || 'week';
 					// adjust url
 					switch(time_duration) {
 						case 'month':
-							url += '?duration=mo';
+							config.url += '?duration=mo';
+							break;
 						case 'year':
-							url += '?duration=y';
+							config.url += '?duration=y';
+							break;
 					}
 					return config;
 				},
@@ -78,14 +80,16 @@ class LivingBuilding {
 			'solar_energy_production': {
 				url: 'http://128.2.109.227:86/Phipps/production/trends',
 				request_formatter: function(config, options) {
-					let	url = config.url,
-						time_duration = options.time_duration || 'week';
+					config = Object.assign({}, config);
+					let	time_duration = options.time_duration || 'week';
 					// adjust url
 					switch(time_duration) {
 						case 'month':
-							url += '?duration=mo';
+							config.url += '?duration=mo';
+							break;
 						case 'year':
-							url += '?duration=y';
+							config.url += '?duration=y';
+							break;
 					}
 					return config;
 				},
@@ -120,7 +124,7 @@ class LivingBuilding {
 		if (!request_config) callback('invalid data label was queried', null);
 		// if storeable
 		else if (request_config.storeable) {
-			let stored_record = this.power_building[label];
+			let stored_record = this.living_building[label];
 			// if in memory
 			if (stored_record) {
 				// if valid, callback
@@ -128,7 +132,7 @@ class LivingBuilding {
 				// else if not valid, update and store, then callback
 				else {
 					this._updateRecord(label, options, (err, record) => {
-						if (!err && record) this.power_building[label] = record;
+						if (!err && record) this.living_building[label] = record;
 						callback(err, (record && record.data));
 					});
 				}
@@ -137,7 +141,7 @@ class LivingBuilding {
 			else {
 				// retrieve and store, then re-execute
 				this._retrieveRecord(label, (err, record) => {
-					this.power_building[label] = (record || {});
+					this.living_building[label] = (record || {});
 					this.getData(label, options, callback);
 				});
 			}
@@ -175,7 +179,6 @@ class LivingBuilding {
 			request_config = this.request_configs[label];
 			request_config = request_config.request_formatter(request_config, options);
 		} catch(err) { callback('error configuring data request', null); }
-
 		request(request_config.url, (err, response, body) => {
 			if (err) callback(err, null);
 			else {
@@ -183,7 +186,7 @@ class LivingBuilding {
 					let data = request_config.data_parser(body, request_config, options);
 					// callback
 					callback(data ? null : 'could not parse data from response', data);
-				} catch(err) { callback('error parsing data', null); }
+				} catch(err) { callback(`error parsing data: '${err}'`, null); }
 			}
 		});
 	}
@@ -220,6 +223,11 @@ let living_building = new LivingBuilding();
 // living_building._requestData('energy_consumption', {}, (err, data) => {
 // 	console.log(err, data);
 // });
+// living_building.getData('solar_energy_production', {
+// 	time_duration: 'week'
+// }, (err, record) => {
+// 	console.log(err, record);
+// });
 
 // const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
 // const MONGO_CLIENT = require('mongodb').MongoClient;
@@ -237,11 +245,13 @@ let living_building = new LivingBuilding();
 // 		// 	console.log(err, record);
 // 		// });
 // 		// should get data
+// 		// living_building.getData('energy_consumption', {
+// 		// 	time_duration: 'month'
+// 		// }, (err, record) => {
+// 		// 	console.log(err, record);
+// 		// });
 // 		// living_building.getData('energy_consumption', {}, (err, record) => {
 // 		// 	console.log(err, record);
-// 		// 	living_building.getData('energy_consumption', {}, (err, record) => {
-// 		// 		console.log(err, record);
-// 		// 	});
 // 		// });
 // 	}
 // });

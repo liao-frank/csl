@@ -134,9 +134,9 @@ class Weather {
 				return_date = new Date();
 
 			// TODO add moment.js to account for timezone and daylight savings GMT -> EDT
-			return_date.setHours(hours + 5);
-			return_date.setMinutes(minutes);
-			return_date.setSeconds(0);
+			return_date.setUTCHours(hours + 5);
+			return_date.setUTCMinutes(minutes);
+			return_date.setUTCSeconds(0);
 			return return_date;
 		}
 		catch(err) {
