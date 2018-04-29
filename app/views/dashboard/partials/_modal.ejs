@@ -1,0 +1,46 @@
+<div class="modal-space">
+	<transition name="fade">	
+		<div
+			v-show="show"
+			class="dashboard-overlay"></div>
+	</transition>
+	<transition name="fade">
+		<div
+			v-show="show"
+			class="modal">
+			<div
+				v-html="content"
+				class="modal-content">
+			</div>
+			<div
+				v-on:click="show = false; showing = '';"
+				class="icon icon-close icon-32"></div>
+		</div>
+	</transition>
+</div>
+<script>
+	let modal = new Vue({
+		el: '.modal-space',
+		data: {
+			content: '',
+			show: false,
+			showing: ''
+		},
+		methods: {
+			renderContent: function(content, show=false) {
+				if (typeof content == 'function') {
+					this.content = '';
+					let $space = $(this.$el).find('.modal-content');
+					$space.empty();
+					content($space);
+				}
+				else if (typeof content == 'string') {
+					let $space = $(this.$el).find('.modal-content');
+					$space.empty();
+					this.content = content;
+				}
+				if (show) this.show = true;
+			}
+		}
+	});
+</script>

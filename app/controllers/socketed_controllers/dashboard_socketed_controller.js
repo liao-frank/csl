@@ -105,16 +105,18 @@ class DashboardSocketedController extends DashboardController {
 	_getLivingBuildingData(io, socket, widget) {
 		let	data_url = widget.data_url,
 			data_label = data_url.match(/#(.+)/)[1],
-			responder = (err, record) => {
+			responder = (err, obj) => {
 						if (err) console.log(err);
 						else {
-							let total = record.reduce((sum, elem) => { return sum + elem[1] }, 0);
+							let data = Array.isArray(obj) ? obj : obj.data;
+							let total = data.reduce((sum, elem) => { return sum + elem[1] }, 0);
 							socket.emit('get_data', {
 								widget: {
 									title: widget ? widget.title : null,
 									label: widget ? widget.label : null,
 									data_label: data_label,
-									data: total
+									data: total,
+									graph_code: Array.isArray(obj) ? null : obj.graph_code
 								}
 							});
 						}

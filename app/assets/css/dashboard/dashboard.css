@@ -238,7 +238,7 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 }
 .widget-list .widget-block .widget-space .widget-contents {
 	position: absolute;
-	z-index: 1;
+	/*z-index: 1;*/
 	top: 0; left: 0;
 	width: 100%; height: 100%;
 	padding: 5px 8px 5px 8px;
@@ -270,15 +270,6 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 .widget-list form .icon-close {
 	position: absolute;
 	top: 12px; right: 12px;
-	width: 24px; height: 24px;
-	background-image: url('/images/icons/x-circle-darkgray.svg');
-
-	transition: all 0.15s ease;
-	-webkit-transition: all 0.15s ease;
-	cursor: pointer;
-} .widget-list form .icon-close:hover {
-	transform: scale(1.1);
-	-webkit-transform: scale(1.1);
 }
 .widget-list .widget-block .widget-space.widget-space-add {
 	background-color: rgba(255, 255, 255, 0.6);
@@ -518,4 +509,36 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 }
 .animation .header {
 	margin-top: 0;
+}
+/* widget modal extension */
+.modal {
+	position: fixed;
+	z-index: 10;
+	top: 50%; left: 50%;
+	width: 750px; height: 500px;
+	background-color: #fff;
+	border-radius: 3px;
+	box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+
+	transform: translate(-50%, -50%);
+	-webkit-transform: translate(-50%, -50%);
+}
+.dashboard-overlay {
+	position: fixed;
+	z-index: 9;
+	top: 0; left: 0;
+	width: 100vw; height: 100vh;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+.modal .icon-close {
+	position: absolute;
+	top: 12px; right: 12px;
+}
+.modal .modal-content {
+	position: absolute;
+	width: 100%; height: 100%;
+	top: 0; left: 0;
+	padding: 15px 20px;
+
+	box-sizing: border-box;
 }

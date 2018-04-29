@@ -74,7 +74,10 @@ class LivingBuilding {
 						// TODO time_point vs date
 						data.push([date, total_energy]);
 					}
-					return data;
+					return {
+						data: data,
+						graph_code: body.match(/var hvac\_data[\s\S]+Highcharts\.chart\([\s\S]+?\}\)\;/)
+					};
 				}
 			},
 			'solar_energy_production': {
@@ -112,7 +115,10 @@ class LivingBuilding {
 						return [date, point[1]];
 					});
 
-					return data;
+					return {
+						data: data,
+						graph_code: body.match(/var production\_data[\s\S]+Highcharts\.chart\([\s\S]+?\}\)\;/)
+					};
 				}
 			}
 		};

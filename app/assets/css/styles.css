@@ -1,10 +1,25 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Roboto:300');
 body {
+	opacity: 1 !important;
 	position: relative;
 	min-height: 100vh;
-	/*background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));*/
+	background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));
 	font-family: 'Roboto', sans-serif;
 	font-weight: lighter;
+
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+body.weather-active:not(.sun-time-active) {
+	background: linear-gradient(to top right, #78c5dc, #bfddec);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+
+}
+body.sun-time-active {
+	background: linear-gradient(to top right, #4e58a7, #2b7bbf);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
 }
 .header {
 	font-family: 'Open Sans', sans-serif;
@@ -39,11 +54,34 @@ h4.header {
 .icon-16 {
 	width: 16px; height: 16px;
 }
-.left-arrow-icon {
+.icon-32 {
+	width: 32px; height: 32px;
+}
+.icon-close {
+	width: 24px; height: 24px;
+	background-image: url('/images/icons/x-circle-darkgray.svg');
+
+	transition: all 0.15s ease;
+	-webkit-transition: all 0.15s ease;
+	cursor: pointer;
+}
+.icon-close:hover {
+	transform: scale(1.1);
+	-webkit-transform: scale(1.1);
+}
+.icon-left-arrow {
 	background-image: url('/images/icons/leftarrow-darkgray.svg');
 }
-.right-arrow-icon {
+.icon-right-arrow {
 	background-image: url('/images/icons/rightarrow-darkgray.svg');
+}
+.icon-graph {
+	width: 20px; height: 20px;
+	background-image: url('/images/icons/graph-darkgray.svg');
+
+	transition: all 0.15s ease;
+	-webkit-transition: all 0.15s ease;
+	cursor: pointer;
 }
 .hover-grow,
 .hover-darken {
@@ -95,7 +133,6 @@ button {
 } .underlay-night {
 	background: linear-gradient(to top right, #4e58a7, #2b7bbf);
 } .underlay-day {
-	/*background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));*/
 	background: linear-gradient(to top right, rgb(127, 206, 232), rgb(200, 233, 249));
 } .underlay-overcast {
 	background-color: rgba(0, 0, 0, 0.05);
