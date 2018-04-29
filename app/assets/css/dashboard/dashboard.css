@@ -522,6 +522,8 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 
 	transform: translate(-50%, -50%);
 	-webkit-transform: translate(-50%, -50%);
+	transition: opacity 0.15s ease;
+	-webkit-transition: opacity 0.15s ease;
 }
 .dashboard-overlay {
 	position: fixed;
@@ -529,6 +531,9 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	top: 0; left: 0;
 	width: 100vw; height: 100vh;
 	background-color: rgba(0, 0, 0, 0.1);
+	
+	transition: opacity 0.15s ease;
+	-webkit-transition: opacity 0.15s ease;
 }
 .modal .icon-close {
 	position: absolute;

@@ -13,7 +13,7 @@ let current_category = {
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
 			// remove listeners for old widgets
 			socket.off('get_data');
-			socket.off('get_dashboard');
+			// socket.off('get_dashboard');
 			let	dashboard = data.dashboard;
 			// render widgets
 			renderWidgets(dashboard.widgets);

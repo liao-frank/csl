@@ -124,6 +124,14 @@ button {
 } .fade-enter, .fade-leave-to {
 	opacity: 0;
 }
+.just-fade-enter-active, .just-fade-leave-active {
+	transition: opacity 0.15s ease;
+	-webkit-transition: opacity 0.15s ease;
+} .just-fade-enter, .just-fade-leave-to {
+	opacity: 0;
+	transition: opacity 0.15s ease;
+	-webkit-transition: opacity 0.15s ease;
+}
 /* Underlays */
 .underlay {
 	position: absolute;

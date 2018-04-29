@@ -105,9 +105,11 @@
 						}
 					});
 				});
-				socket.on('get_dashboard', function() {
+				let destroy_self = function() {
 					clothes_pile.$destroy();
-				});
+					socket.off('get_dashboard', destroy_self);
+				};
+				socket.on('get_dashboard', destroy_self);
 				socket.on('get_data', (obj) => {
 					if (obj.widget && obj.widget.title == 'energy_production') {
 						if (obj.err) log('error loading widget', obj);
