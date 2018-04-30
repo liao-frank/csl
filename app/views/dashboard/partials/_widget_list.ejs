@@ -168,7 +168,7 @@
 				let updated_widget = this.compileForm(),
 					new_widgets = this.widgets.slice(0);
 				// if valid update, replace widget in new_widgets
-				if (updated_widget) {
+				if (updated_widget && confirm(`Are you sure you're ready to save? This can't be undone.`)) {
 					let found = false;
 					new_widgets.forEach((widget, index) => {
 						if (widget.title == updated_widget.title) {

@@ -1,3 +1,36 @@
 <div class="main-message">
-	<h1 class="header">welcome</h1>
+	<div
+		class="sun-time sun-time-night icon icon-20 icon-save hover-grow hover-grow-11-10"
+		v-show="edit_mode"
+		v-on:click="save()"></div>
+	<h1 class="header" v-bind:contenteditable="edit_mode"></h1>
+	<p class="sun-time sun-time-night no-initial-transition" v-bind:contenteditable="edit_mode"></p>
 </div>
+<script>
+	let main_message = new Vue({
+		el: '.main-message',
+		data: {
+			edit_mode: false
+		},
+		methods: {
+			save: function() {
+				let	$el = $(this.$el),
+					header_text = $el.find('.header').text(),
+					message_text = $el.find('p').text();
+				// if valid update, replace widget in new_widgets
+				if (header_text && message_text) {
+					if (confirm(`Are you sure you're ready to save? This can't be undone.`)) {
+						socket.emit('update_dashboard', {
+							dashboard: {
+								category: current_category.category,
+								title: header_text,
+								message: message_text
+							}
+						});
+					}
+				}
+				else alert(`You're missing some content!`);
+			}
+		}
+	});
+</script>

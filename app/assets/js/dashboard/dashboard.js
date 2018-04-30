@@ -76,6 +76,7 @@ let current_category = {
 			widget_list.editable = !widget_list.editable;
 			widget_list.editing_widget = null;
 			widget_list.adding_widget = null;
+			main_message.edit_mode = !main_message.edit_mode;
 		});
 	});
 	function addWidget(widget, index) {
