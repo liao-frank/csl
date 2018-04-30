@@ -387,9 +387,9 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	transform: translate(0px, 0px);
 	-webkit-transform: translate(0px, 0px);
 }
-.csl-environment-space .weather:not(.csl) {
-	transform: translate3d(-15px, 0px, 0px);
-	-webkit-transform: translate3d(-15px, 0px, 0px);
+.csl-environment-space .weather:not(.csl):not(.generator) {
+	/*transform: translate3d(-15px, 0px, 0px);
+	-webkit-transform: translate3d(-15px, 0px, 0px);*/
 	transform: translate(-15px, 0px);
 	-webkit-transform: translate(-15px, 0px);
 }
@@ -427,11 +427,14 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
 }
-.generator.sun-time.sun-time-active,
-.generator:not(.sun-time) {
+.generator:not(.generator-active) {
+	opacity: 0 !important;
+}
+/*.generator:not(.sun-time) {
 	opacity: 0;
-} .generator.generator-active.sun-time.sun-time-active,
-.generator.generator-active:not(.sun-time) {
+} */.generator.generator-active.sun-time.sun-time-active,
+.generator.generator-active.weather.weather-active,
+.generator.generator-active:not(.sun-time):not(.weather) {
 	opacity: 1;
 }
 .no-initial-transition {
