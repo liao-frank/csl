@@ -17,7 +17,12 @@ class AppRouter extends BeanRouter {
 		global.mongoDB;
 
 		// Use connect method to connect to the MongoDB server
-		MONGO_CLIENT.connect(MLAB_URL, function(err, client) {
+		MONGO_CLIENT.connect(MLAB_URL, 
+		{
+			reconnectTries: Number.MAX_VALUE,
+			reconnectInterval: 1000
+		},
+		function(err, client) {
 			if (err) console.log(err);
 			else {
 				console.log('Connected to mlab')
