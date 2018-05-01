@@ -13,7 +13,7 @@
 				class="modal-content">
 			</div>
 			<div
-				v-on:click="show = false; showing = '';"
+				v-on:click="show = false; showing = ''; destroyContent();"
 				class="icon icon-close icon-32"></div>
 		</div>
 	</transition>
@@ -37,9 +37,13 @@
 				else if (typeof content == 'string') {
 					let $space = $(this.$el).find('.modal-content');
 					$space.empty();
-					this.content = content;
+					$space.append($(content));
 				}
 				if (show) this.show = true;
+			},
+			destroyContent: function() {
+				let $space = $(this.$el).find('.modal-content');
+					$space.empty();
 			}
 		}
 	});

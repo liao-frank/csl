@@ -526,6 +526,65 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 .animation .header {
 	margin-top: 0;
 }
+/* video widget */
+.widget-contents .video-preview {
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 80%;
+
+	background-color: #000;
+	background-size: contain;
+	background-position: center;
+	overflow: hidden;
+
+	cursor: pointer;
+}
+.widget-contents .video-preview video {
+	position: absolute;
+	top: 50%; left: 0;
+	width: 100%; height: auto;
+
+	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+}
+.widget-contents .video-preview .icon-play {
+	position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, -50%) scale(1);
+	-webkit-transform: translate(-50%, -50%) scale(1);
+
+	transition: transform 0.15s ease;
+	-webkit-transition: transform 0.15s ease;
+}
+.widget-contents .video-preview:hover .icon-play {
+	transform: translate(-50%, -50%) scale(0.7);
+	-webkit-transform: translate(-50%, -50%) scale(0.7);
+}
+.widget-contents .video-preview p {
+	opacity: 0;
+	position: absolute;
+	height: 100%;
+	margin: 0;
+	padding: 25px 15px;
+	box-sizing: border-box;
+
+	background-color: rgba(255, 255, 255, 0.75);
+	line-height: 1.6;
+
+	transition: opacity 0.15s ease;
+	-webkit-transition: opacity 0.15s ease;
+}
+.widget-contents .video-preview:hover p {
+	opacity: 1;
+}
+.widget-contents .video-title {
+	position: absolute;
+	bottom: 0; left: 0;
+	width: 100%; height: 20%;
+	margin: 0;
+	padding: 5px 7px;
+	box-sizing: border-box;
+}
 /* widget modal extension */
 .modal {
 	position: fixed;

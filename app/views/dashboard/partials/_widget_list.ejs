@@ -110,6 +110,10 @@
 						}
 					});
 				}
+				// else just run data_handler 
+				else if (widget.data_handler) {
+					eval(widget.data_handler)($template);
+				}
 				// add template to widget
 				let $contents = $(this.$el).find('.widget-contents');
 				$contents.append($template);

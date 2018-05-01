@@ -78,6 +78,9 @@ h4.header {
 	transform: scale(1.1);
 	-webkit-transform: scale(1.1);
 }
+.icon-play {
+	background-image: url('/images/icons/play-white.svg');
+}
 .icon-left-arrow {
 	background-image: url('/images/icons/leftarrow-darkgray.svg');
 }

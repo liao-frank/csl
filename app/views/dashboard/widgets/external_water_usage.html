@@ -1,0 +1,120 @@
+<div class="one-stat energy-consumption" style="top: 50%;">
+	<div class="stat">
+		<span class="stat-number">...</span><span class="stat-label">gal</span>
+	</div>
+	<div
+		class="bottom-text"
+		style="margin: 0 auto;
+			width: 200px;">
+		Domestic water used
+		<div
+			class="controls hover-darken hover-darken-90" 
+			style="overflow: hidden; position: relative;
+				margin: 5px auto 0 auto;
+				padding: 7.5px 5px 7.5px 6.5px;
+				width: 120px; height: 20px;
+				border-radius: 3px;
+				background-color: #f2f2f2;
+				cursor: pointer;
+				user-select: none;">
+			<span
+				class="icon icon-left-arrow hover-grow hover-grow-5-4"
+				style="position: absolute;
+					z-index: 1;
+					top: calc(50% - 6px); left: 5px;
+					width: 12px; height: 12px;"></span><span
+				class="state"
+				style="position: absolute;
+					top: 50%; left: 50%;
+					transform: translate(-50%, -50%);
+					transition: all 0.4s ease;">week</span><span
+				class="icon icon-right-arrow hover-grow hover-grow-5-4"
+				style="position: absolute;
+					z-index: 1;
+					top: calc(50% - 6px); right: 5px;
+					width: 12px; height: 12px;"></span>
+		</div>
+		<script>
+			(function() {
+				const $widget = $('.one-stat').last();
+				const $controls = $widget.find('.controls');
+				const durations = ['week', 'month'];
+				const urls = {
+					'week': 'https://128.2.109.159/piwebapi/streams/P0-MYhSMORGkyGTe9bdohw0AYBMCAAV0lOLTYyTlBVMkJWTDIwXFBISVBQU19ET01FU1RJQyBXQVRFUiBNRVRFUl9VU0VfVE9EQVlfVy5QUkVTRU5UX1ZBTFVF/value',
+					'month': 'https://128.2.109.159/piwebapi/streams/P0-MYhSMORGkyGTe9bdohw0AYRMCAAV0lOLTYyTlBVMkJWTDIwXFBISVBQU19ET01FU1RJQyBXQVRFUiBNRVRFUl9VU0VfTVREX1cuUFJFU0VOVF9WQUxVRQ/value'
+				};
+				let durations_index = 0;
+				socket.on('get_data', (obj) => {
+					if (obj.widget && obj.widget.title == 'External Water Usage') {
+						if (obj.err) log('error loading widget', obj);
+						else {
+							let output = prettyNumber(Math.round(obj.widget.data.Value));
+							$widget.find('.stat-number').text(output || '---');
+						}
+					}
+				});
+				swtch(0);
+				function swtch(incr) {
+					durations_index = (durations_index + incr) == -1 ? durations.length - 1 : (durations_index + incr) % durations.length;
+					if (incr) {
+						$widget.find('.stat-number').text('...');
+						slideOut($controls.find('.state'), incr == 1 ? 'left' : 'right');
+						slideIn(durations[durations_index], incr == 1 ? 'right' : 'left');
+					}
+					// get data
+					socket.emit('get_data', {
+						widget: {
+							title: 'External Water Usage',
+							data_url: urls[durations[durations_index]]
+						}
+					});
+				}
+				function slideIn(str, direction) {
+					let $new_elem = $(`<span
+						class="state"
+						style="position: absolute;
+							top: 50%; left: ${direction == 'left' ? '0%' : '100%'};
+							transform: translate(${direction == 'left' ? '-100%' : '0%'}, -50%);
+							transition: all 0.4s ease;">${str}</span>`);
+					$controls.append($new_elem);
+					$new_elem.hide().show(0);
+					$new_elem.css({
+						left: '50%',
+						transform: 'translate(-50%, -50%)'
+					});
+				}
+				function slideOut($elem, direction) {
+					$elem.css({
+						left: direction == 'left' ? '0%' : '100%',
+						transform: `translate(${direction == 'left' ? '-100%' : '0%'}, -50%)`
+					});
+					setTimeout(() => {
+						$elem.remove();
+					}, 400);
+				}
+				function prettyNumber(n) {
+					if (!n) return null;
+					let	output = n.toString().split('').reverse(),
+						start = 3;
+					while (start < output.length) {
+						output.splice(start, 0, ',');
+						start += 4;
+					}
+					return output.reverse().join('');
+				}
+
+				$controls.on('click', () => {
+					swtch(1);
+				});
+				$controls.find('.icon-left-arrow').on('click', (e) => {
+					swtch(-1);
+					e.stopPropagation();
+				});
+				$controls.find('.icon-right-arrow').on('click', (e) => {
+					swtch(1);
+					e.stopPropagation();
+				});
+			})();
+		</script>
+	</div>
+</div>
