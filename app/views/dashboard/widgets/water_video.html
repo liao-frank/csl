@@ -1,0 +1,28 @@
+<div class="video-preview">
+	<video id="video" muted="" class="gifyt-player gifyt-embed" preload="auto" poster="/images/previews/water.jpg" loop="" autoplay="" playsinline="">
+		<source src="/videos/previews/water.mp4" type="video/mp4">
+	</video>
+	<div class="icon icon-32 icon-play"></div>
+	<p>
+		There is the same amount of water on Earth today as there was when the dinosaurs roamed. Learn more about water in all its forms and how you can make a difference.
+	</p>
+</div>
+<h4 class="video-title header">
+	Why Care About Water?
+</h4>
+<script>
+(elem) => {
+	$(elem).find('.video-preview').addBack('.video-preview').on('click', function() {
+		modal.renderContent(`
+			<iframe width="750" height="400"
+			src="https://www.youtube.com/embed/Fvkzjt3b-dU?autoplay=1"
+			style="
+				position: absolute;
+				top: calc(50% - 200px); left: 0;
+				border: none;
+			">
+			</iframe>
+		`, show=true);
+	});
+}
+</script>

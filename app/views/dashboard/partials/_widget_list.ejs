@@ -223,4 +223,29 @@
 			}
 		}
 	});
+
+	// re-ordering functions for external use
+	// TODO interalize and implement into GUI
+	function widgetUpdate() {
+		socket.emit('update_dashboard', {
+			dashboard: {
+				category: current_category.category,
+				widgets: widget_list.widgets
+			}
+		});
+	}
+	function widgetSwap(indexOne, indexTwo) {
+		let widgets = widget_list.widgets;
+		let widget = widgets[indexOne];
+		widgets[indexOne] = widgets[indexTwo];
+		widgets[indexTwo] = widget;
+		widgetUpdate();
+	}
+	function widgetMove(oldIndex, newIndex) {
+		let widgets = widget_list.widgets;
+		let widget = widgets[oldIndex];
+		widgets.splice(oldIndex, 1);
+		widgets.splice(newIndex, 0, widget);
+		widgetUpdate();
+	}
 </script>
