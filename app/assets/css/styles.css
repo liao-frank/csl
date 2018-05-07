@@ -167,11 +167,13 @@ button {
 }
 
 .lock {
+	position: absolute;
+	z-index: 1;
+	top: 10px; right: 5px;
 	width: 24px; height: 21px;
 	border: 3px solid #fff;
 	border-radius: 5px;
-	position: absolute;
-	top: 10px; right: 5px;
+
 	cursor: pointer;
 	-webkit-transition: all 0.1s ease-in-out;
 	transition: all 0.1s ease-in-out;
