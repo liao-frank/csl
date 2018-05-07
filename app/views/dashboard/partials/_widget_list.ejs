@@ -152,8 +152,9 @@
 					socket.emit('update_dashboard', {
 						dashboard: {
 							category: current_category.category,
-							widgets: new_widgets
-						}
+							widgets: new_widgets,
+						},
+						auth: auth
 					});
 				}
 			},
@@ -185,7 +186,8 @@
 						dashboard: {
 							category: current_category.category,
 							widgets: new_widgets
-						}
+						},
+						auth: auth
 					});
 					// close editor
 					this.editing_widget = null;
@@ -204,7 +206,11 @@
 					template = $form.find('#template').val();
 					$(template);
 					if (!template) { alertToast('failure', 'template cannot be empty'); failed = true; }
-				} catch(err) { alertToast('failure', 'error while parsing template'); console.log(err); failed = true; }
+				} catch(err) {
+					alertToast('failure', 'error while parsing template');
+					console.log(err);
+					failed = true;
+				}
 				let data_handler;
 				try {
 					data_handler = $form.find('#data_handler').val();
@@ -212,7 +218,11 @@
 						alertToast('failure', 'invalid format of data handler');
 						failed = true;
 					}
-				} catch(err) { alertToast('failure', 'error while parsing data handler'); console.log(err); failed = true; }
+				} catch(err) {
+					alertToast('failure', 'error while parsing data handler');
+					console.log(err);
+					failed = true;
+				}
 				return failed ? null : {
 					title: title,
 					label: label,
@@ -231,7 +241,8 @@
 			dashboard: {
 				category: current_category.category,
 				widgets: widget_list.widgets
-			}
+			},
+			auth, auth
 		});
 	}
 	function widgetSwap(indexOne, indexTwo) {

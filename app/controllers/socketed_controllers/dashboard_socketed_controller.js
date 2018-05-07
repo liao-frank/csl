@@ -8,11 +8,19 @@ class DashboardSocketedController extends DashboardController {
 		this.living_building = require(this.path + '/app/models/LivingBuilding.js');
 		// request-er
 		this.request = cli.require('request');
+		// md5
+		this.md5 = cli.require('md5');
 	}
 
 	dashboard_socket(io, socket) {
 		socket.emit("connected", {});
 		// WIDGET EVENTS
+		socket.on('authorize', (data) => {
+			let valid = data.auth && this._authorize(data.auth.username, data.auth.password);
+			socket.emit('authorize', {
+				authorized: valid
+			});
+		});
 		// on request
 		socket.on('get_dashboard', (data) => {
 			let category = data.category;
@@ -35,6 +43,16 @@ class DashboardSocketedController extends DashboardController {
 		});
 		// on update
 		socket.on('update_dashboard', (data) => {
+			// authorize
+			let auth = data.auth;
+			if (!auth || !this._authorize(auth.username, auth.password)) {
+				socket.emit('update_dashboard', {
+					dashboard: null,
+					err: 'failed to authorize'
+				});
+				return;
+			}
+			// and..
 			let	category = data.dashboard.category;
 			this._dashboard.updateDashboard(category, data.dashboard, (err, doc) => {
 				// if error occurred, return null widgets
@@ -68,6 +86,10 @@ class DashboardSocketedController extends DashboardController {
 				else if (widget.data_url.match(/living_building/)) {
 					this._getLivingBuildingData(io, socket, widget);
 				}
+				// JSON APIs
+				else if (widget.data_url.match(/http/)) {
+					this._getJsonData(io, socket, widget);
+				}
 			} catch(err) {
 				console.log(err);
 			}	
@@ -76,6 +98,26 @@ class DashboardSocketedController extends DashboardController {
 
 	sandbox_socket(io, socket) {
 		
+	}
+
+	_getJsonData(io, socket, widget) {
+		let options = {
+			url: widget.data_url
+		};
+		this.request(options, function (err, res, body) {
+			try {
+				if (err) console.log(err);
+				else socket.emit('get_data', {
+					widget: {
+						title: widget ? widget.title : null,
+						label: widget ? widget.label : null,
+						data: JSON.parse(body)
+					}
+				});
+			} catch(err) {
+				console.log(err);
+			}	
+		});
 	}
 
 	_getPiServerData(io, socket, widget) {
@@ -152,5 +194,16 @@ class DashboardSocketedController extends DashboardController {
 			default:
 				console.log('bad data label: ' + data_label);
 		}
+	}
+
+	_authorize(username, password) {
+		if (username && password) {
+			if (this.md5(password) == global.credentials.password_hash) {
+				if (username == global.credentials.username) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

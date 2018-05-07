@@ -9,7 +9,11 @@ class AppRouter extends BeanRouter {
 		this.get('/dashboard', 'dashboard#dashboard');
 		this.get('/sandbox', 'dashboard#sandbox');
 
-
+		// user credentials
+		global.credentials = {
+			username: 'csl-cmu-2018',
+			password_hash: '394e54859a1f9fbbcefae5745c6275e1'
+		}
 		// prepare mongoDB
 		// const LOCAL_DB_URL = 'mongodb://localhost:27017';
 		const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';

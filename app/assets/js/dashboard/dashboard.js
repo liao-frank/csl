@@ -1,7 +1,10 @@
 // DEFINE DASHBOARD SOCKET EVENT
-let	_addWidget;
 let current_category = {
 	category: 'weather'
+};
+let auth = {
+	username: '',
+	password: ''
 };
 (function() {
 	socket.on('get_dashboard', (data) => {
@@ -29,6 +32,7 @@ let current_category = {
 		if (data.err) {
 			log(`unable to update category '${current_category.category}'`, data.err);
 			alertToast('failure', `unable to update category '${current_category.category}'`);
+			requestDashboard(current_category);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
 			// remove listeners for old widgets
@@ -71,42 +75,57 @@ let current_category = {
 			requestDashboard(current_category);
 		});
 		// edit mode
-		$(".lock").on('click', function() {
-			$(this).toggleClass('unlocked');
-			widget_list.editable = !widget_list.editable;
-			widget_list.editing_widget = null;
-			widget_list.adding_widget = null;
-			main_message.edit_mode = !main_message.edit_mode;
+		$('.lock').on('click', function() {
+			if (!$(this).hasClass('unlocked')) {
+				authorize(() => {
+					$(this).toggleClass('unlocked');
+					widget_list.editable = !widget_list.editable;
+					widget_list.editing_widget = null;
+					widget_list.adding_widget = null;
+					main_message.edit_mode = !main_message.edit_mode;
+					// create logout
+					if ($('a.logout').length == 0) createLogout();
+				});
+			}
+			else {
+				$(this).toggleClass('unlocked');
+				widget_list.editable = !widget_list.editable;
+				widget_list.editing_widget = null;
+				widget_list.adding_widget = null;
+				main_message.edit_mode = !main_message.edit_mode;
+			}
 		});
 	});
-	function addWidget(widget, index) {
-		if (!validWidget(widget)) return;
-		else {
-			let	widgets = widget_list.widgets,
-				new_widgets = widgets.slice(0);
-			// console.log(new_widgets);
-			if (index) new_widgets.splice(index, 0, widget);
-			else new_widgets.push(widget);
-			socket.emit('update_dashboard', {
-				dashboard: {
-					category: current_category.category,
-					widgets: new_widgets
-				}
-			});
-		}
-	}
-	function removeWidget(index) {
-		let	widgets = widget_list.widgets,
-			new_widgets = widgets.slice(0);
-		if (!(index >= 0 && index <= widgets.length)) return;
+	// function addWidget(widget, index) {
+	// 	if (!validWidget(widget)) return;
+	// 	else {
+	// 		let	widgets = widget_list.widgets,
+	// 			new_widgets = widgets.slice(0);
+	// 		// console.log(new_widgets);
+	// 		if (index) new_widgets.splice(index, 0, widget);
+	// 		else new_widgets.push(widget);
+	// 		socket.emit('update_dashboard', {
+	// 			dashboard: {
+	// 				category: current_category.category,
+	// 				widgets: new_widgets,
+	// 				auth: auth
+	// 			}
+	// 		});
+	// 	}
+	// }
+	// function removeWidget(index) {
+	// 	let	widgets = widget_list.widgets,
+	// 		new_widgets = widgets.slice(0);
+	// 	if (!(index >= 0 && index <= widgets.length)) return;
 
-		new_widgets.splice(index, 1);
+	// 	new_widgets.splice(index, 1);
 
-		socket.emit('update_widgets', {
-			category: current_category.category,
-			widgets: new_widgets
-		});
-	}
+	// 	socket.emit('update_dashboard', {
+	// 		category: current_category.category,
+	// 		widgets: new_widgets,
+	// 		auth: auth
+	// 	});
+	// }
 	function duplicateWidgetFields(widget) {
 		const unique_fields = ['title', 'label'];
 		for (let other_widget of widget_list.widgets) {
@@ -157,8 +176,136 @@ let current_category = {
 		if (!widget) alertToast('not a valid widget');
 		else return true;
 	}
+	function authorize(callback, request=true) {
+		let	username = getCookie('username'),
+			password = getCookie('password');
 
-	_addWidget = addWidget;
+		if (username && password) {
+			authorizeServer(username, password, callback, failure=() => {
+				alertToast('failure', 'saved credentials are invalid');
+				password = '';
+				setCookie('password', '', 0);
+				authorizeForm(() => {
+					modal.renderContent();
+					alertToast('success', 'successfully logged in');
+					callback();
+				}, failure=() => {
+					alertToast('failure', 'incorrect username or password');
+				});
+			});
+		}
+		if ((!username || !password) && request) {
+			authorizeForm(() => {
+				modal.renderContent();
+				alertToast('success', 'successfully logged in');
+				callback();
+			}, failure=() => {
+				alertToast('failure', 'incorrect username or password');
+			});
+		}
+	}
+	function authorizeForm(success, failure=null) {
+		modal.renderContent(($elem) => {
+			let $form = $(`
+				<form class="authorization-form pure-form pure-form-aligned">
+					<fieldset>
+						<div class="pure-control-group">
+							<label>&nbsp;</label>
+							<h2 class="header">Sign In</h2>
+						</div>
+
+						<div class="pure-control-group">
+							<label>Username</label>
+							<input class="username" type="text" placeholder="Username">
+						</div>
+
+						<div class="pure-control-group">
+							<label>Password</label>
+							<input class="password" type="password" placeholder="Password">
+						</div>
+
+						<div class="pure-controls">
+							<label class="pure-checkbox">
+								<input class="remember" type="checkbox"> Remember me for 30 days
+							</label>
+
+							<div class="pure-button pure-button-primary">Submit</div>
+						</div>
+					</fieldset>
+				</form>
+			`);
+			$elem.append($form);
+			let username = getCookie('username');
+			if (username) $form.find('.username').val(username);
+			// set up form
+			let sendAuthorizationRequest = () => {
+				let	username = $form.find('.username').val(),
+					password = $form.find('.password').val();
+				authorizeServer(username, password, () => {
+					success();
+					if ($form.find('.remember').is(':checked')) {
+						setCookie('username', username, 10000);
+						setCookie('password', password, 30);
+					}
+				}, () => {
+					let $password = $form.find('.password');
+					$password.val('');
+					$password.focus();
+					failure();
+				});
+			};
+			$form.on('keypress', (e) => {
+				if (e.which == 13) {
+					sendAuthorizationRequest();
+				}
+			});
+			$form.find('.pure-button').on('click', sendAuthorizationRequest);
+		}, show=true);
+	}
+	function authorizeServer(username, password, success, failure=null) {
+		socket.emit('authorize', {
+			auth: {
+				username: username,
+				password: password
+			}
+		});
+		socket.on('authorize', (obj) => {
+			socket.off('authorize');
+			// success
+			if (obj.authorized) {
+				success();
+				auth.username = username;
+				auth.password = password;
+			}
+			// failure
+			else if (failure) {
+				failure();
+			}
+		});
+	}
+	function logout() {
+		// delete credentials
+		setCookie('password', '', 0);
+		// lock
+		let $lock = $('.lock');
+		if ($lock.hasClass('unlocked')) {
+			$lock.toggleClass('unlocked');
+			widget_list.editable = !widget_list.editable;
+			widget_list.editing_widget = null;
+			widget_list.adding_widget = null;
+			main_message.edit_mode = !main_message.edit_mode;
+		}
+		// remove logout link
+		$('a.logout').remove();
+	}
+	function createLogout() {
+		// add logout link
+		$('footer').append('<a class="logout">Log Out</a>');
+		// set up logout link
+		$('a.logout').on('click', function() {
+			logout();
+		});
+	}
 })();
 
 function alertToast(type, message) {
