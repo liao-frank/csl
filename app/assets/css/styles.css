@@ -11,8 +11,8 @@ body {
 	background-attachment: fixed;
 }
 footer.container {
-	padding: 0 1.66% 0 1.66%;
-	margin-bottom: 20px;
+	padding: 0 1.66% 20px 1.66%;
+	/*margin-bottom: 20px;*/
 	box-sizing: border-box;
 }
 body.weather-active:not(.sun-time-active) {
