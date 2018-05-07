@@ -83,8 +83,6 @@ let auth = {
 					widget_list.editing_widget = null;
 					widget_list.adding_widget = null;
 					main_message.edit_mode = !main_message.edit_mode;
-					// create logout
-					if ($('a.logout').length == 0) createLogout();
 				});
 			}
 			else {
@@ -95,6 +93,7 @@ let auth = {
 				main_message.edit_mode = !main_message.edit_mode;
 			}
 		});
+		authorize(()=>{}, request=false);
 	});
 	// function addWidget(widget, index) {
 	// 	if (!validWidget(widget)) return;
@@ -181,18 +180,23 @@ let auth = {
 			password = getCookie('password');
 
 		if (username && password) {
-			authorizeServer(username, password, callback, failure=() => {
-				alertToast('failure', 'saved credentials are invalid');
-				password = '';
-				setCookie('password', '', 0);
-				authorizeForm(() => {
-					modal.renderContent();
-					alertToast('success', 'successfully logged in');
+			authorizeServer(username, password, 
+				() => {
 					callback();
-				}, failure=() => {
-					alertToast('failure', 'incorrect username or password');
-				});
-			});
+					// create logout
+					if ($('a.logout').length == 0) createLogout();
+				},
+				failure=() => {
+					alertToast('failure', 'saved credentials are invalid');
+					password = '';
+					setCookie('password', '', 0);
+					authorizeForm(() => {
+						modal.renderContent();
+						alertToast('success', 'successfully logged in');
+						callback();
+					});
+				}
+			);
 		}
 		if ((!username || !password) && request) {
 			authorizeForm(() => {
@@ -246,6 +250,8 @@ let auth = {
 					if ($form.find('.remember').is(':checked')) {
 						setCookie('username', username, 10000);
 						setCookie('password', password, 30);
+						// create logout
+						if ($('a.logout').length == 0) createLogout();
 					}
 				}, () => {
 					let $password = $form.find('.password');
