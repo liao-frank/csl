@@ -39,6 +39,11 @@
 					$space.empty();
 					$space.append($(content));
 				}
+				else {
+					let $space = $(this.$el).find('.modal-content');
+					$space.empty();
+					this.show = false;
+				}
 				if (show) this.show = true;
 			},
 			destroyContent: function() {
