@@ -301,6 +301,7 @@ let auth = {
 			widget_list.adding_widget = null;
 			main_message.edit_mode = !main_message.edit_mode;
 		}
+		alertToast('success', 'successfully logged out');
 		// remove logout link
 		$('a.logout').remove();
 	}
