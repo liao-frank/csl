@@ -366,6 +366,9 @@ nav ul li a .icon.icon-water { max-height: 50%; }
 	text-align: center;
 	cursor: pointer;
 }
+.controls-time button {
+	background-color: #fff;
+}
 .controls-weather.active {
 	border-radius: 3px 3px 0 0;
 	background-color: #ddd;
