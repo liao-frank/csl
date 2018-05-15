@@ -50,7 +50,7 @@ socket.on("connected", function() {
 			start_time = hourly_forecast && hourly_forecast.start_time && new Date(hourly_forecast.start_time),
 			end_time = hourly_forecast && hourly_forecast.end_time && new Date(hourly_forecast.end_time),
 			now = new Date();
-		if (hourly_forecast.err) log(err, hourly_forecast);
+		if (hourly_forecast.err) log(hourly_forecast.err, hourly_forecast);
 		else if (!forecast || !start_time || !end_time || (end_time < now)) {
 			log(`'get_hourly_forecast' event received w/ bad data\n`, hourly_forecast);
 		}
@@ -90,7 +90,7 @@ $(document).ready(function() {
 $(window).on('load', function() {
 	$('.no-initial-transition').removeClass('no-initial-transition');
 });
-const sun_time_transition = 'all 10s ease';
+const sun_time_transition = 'all 4s ease';
 const weather_transition = 'all 0.7s ease';
 function activateSunTimeDay() {
 	let $sun_time = $('.sun-time'),
@@ -141,7 +141,11 @@ function activateWeather(forecast) {
 	else {
 		// if cloudy, not partly, overcast
 		if (forecast.match(/Cloud/i) && !forecast.match(/Part/i) && !forecast.match(/Most/i)) $('.weather-overcast').addClass('weather-active');
-		else if (forecast.match(/Cloud/i)) $('.clouds').addClass('weather-active');
+		else if (forecast.match(/Cloud/i)) {
+			$('.clouds').addClass('weather-active');
+			$('.weather-partly-cloudy').addClass('weather-active');
+		}
+		else $('.weather-clear').addClass('weather-active');
 	}
 }
 

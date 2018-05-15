@@ -11,12 +11,12 @@ class AppRouter extends BeanRouter {
 
 		// user credentials
 		global.credentials = {
-			username: 'csl-cmu-2018',
-			password_hash: '394e54859a1f9fbbcefae5745c6275e1'
+			username: 'admin',
+			password_hash: '5ebe2294ecd0e0f08eab7690d2a6ee69'
 		}
 		// prepare mongoDB
 		// const LOCAL_DB_URL = 'mongodb://localhost:27017';
-		const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
+		const MLAB_URL = 'mongodb://fliao:fliaophipps@ds119800.mlab.com:19800/phipps-dashboard';
 		const MONGO_CLIENT = cli.require('mongodb').MongoClient;
 		global.mongoDB;
 

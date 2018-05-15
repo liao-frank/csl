@@ -31,7 +31,7 @@ let auth = {
 		// check error
 		if (data.err) {
 			log(`unable to update category '${current_category.category}'`, data.err);
-			alertToast('failure', `unable to update category '${current_category.category}'`);
+			alertToast('failure', `no updating in demo version ;)`);
 			requestDashboard(current_category);
 		}
 		else if (validDashboard(data.dashboard) && data.dashboard.category == current_category.category) {
@@ -72,7 +72,7 @@ let auth = {
 			$category_links.removeClass('active');
 			$this.addClass('active');
 			// request new widgets
-			requestDashboard(current_category);
+			// requestDashboard(current_category);
 		});
 		// edit mode
 		$('.lock').on('click', function() {
@@ -94,37 +94,12 @@ let auth = {
 			}
 		});
 		authorize(()=>{}, request=false);
+		// Demo functions
+		$('.controls-weather').on('click', function() {
+			$(this).toggleClass('active');
+		});
+		renderDemoIntro();
 	});
-	// function addWidget(widget, index) {
-	// 	if (!validWidget(widget)) return;
-	// 	else {
-	// 		let	widgets = widget_list.widgets,
-	// 			new_widgets = widgets.slice(0);
-	// 		// console.log(new_widgets);
-	// 		if (index) new_widgets.splice(index, 0, widget);
-	// 		else new_widgets.push(widget);
-	// 		socket.emit('update_dashboard', {
-	// 			dashboard: {
-	// 				category: current_category.category,
-	// 				widgets: new_widgets,
-	// 				auth: auth
-	// 			}
-	// 		});
-	// 	}
-	// }
-	// function removeWidget(index) {
-	// 	let	widgets = widget_list.widgets,
-	// 		new_widgets = widgets.slice(0);
-	// 	if (!(index >= 0 && index <= widgets.length)) return;
-
-	// 	new_widgets.splice(index, 1);
-
-	// 	socket.emit('update_dashboard', {
-	// 		category: current_category.category,
-	// 		widgets: new_widgets,
-	// 		auth: auth
-	// 	});
-	// }
 	function duplicateWidgetFields(widget) {
 		const unique_fields = ['title', 'label'];
 		for (let other_widget of widget_list.widgets) {
@@ -334,4 +309,26 @@ function activateGenerator(category=current_category.category) {
 	$generator.css('transition',generator_transition);
 	$generator.removeClass('generator-active');
 	$current_generator.addClass('generator-active');
+}
+function renderDemoIntro() {
+	let intro = generateDemoIntro();
+	modal.renderContent(intro, show=true);
+}
+function generateDemoIntro() {
+	let $intro = $(`
+	<div class="intro">
+		<h2 class="header">Hello there 😊</h2>
+		<p>
+			Welcome to the demo version of <a href="https://devpost.com/software/phipps-dashboard" target="_blank">the dashboard</a>. Feel free to explore the systems and their interactions. Note* the dashboard was built for a standalone tablet system and is otherwise not responsive. Please view on a desktop or horizontal tablet.
+		</p>
+		<h3 class="header">Highlights</h3>
+		<ul>
+			<li>Try out the dynamic background/theme. In this demo, you can select different times and weather patterns near the CSL graphic.</li>
+			<li>See how the widget system works. Log in with the 'lock' icon in the upper right corner with <em>(admin : secret)</em>. Widgets are editable and extensible.</li>
+			<li>Notice the custom toast/alert system throughout your interactions. It was built as part of the CMS.</li>
+		</ul>
+		<span class="signature">Frank Liao</span>
+	</div> 
+	`);
+	return $intro;
 }

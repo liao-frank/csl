@@ -1,4 +1,48 @@
 <div class="csl-environment-space">
+	<div class="controls-csl">
+		<div class="controls-weather">
+			<span class="text">Select weather..</span>
+			<span class="icon icon-list"></span>
+			<ul>
+				<li
+				class="weather weather-clear"
+				onclick="activateWeather('');">Clear</li>
+				<li
+				class="weather weather-partly-cloudy"
+				onclick="activateWeather('Partly Cloudy');">Partly Cloudy</li>
+				<li
+				class="weather weather-overcast"
+				onclick="activateWeather('Cloudy');">Cloudy</li>
+				<li
+				class="weather weather-showers"
+				onclick="activateWeather('Showers');">Showers</li>
+				<li
+				class="weather weather-rain"
+				onclick="activateWeather('Rainy');">Rainy</li>
+				<li
+				class="weather weather-thunderstorm"
+				onclick="activateWeather('Thunderstorm');">Thunderstorm</li>
+				<li
+				class="weather weather-wintry-mix"
+				onclick="activateWeather('Snow/Rain Mix');">Snow/Rain Mix</li>
+				<li
+				class="weather weather-snow"
+				onclick="activateWeather('Snow');">Snow</li>
+			</ul>
+		</div>
+		<div class="controls-time">
+			<button
+			class="sun-time sun-time-day"
+			onclick="activateSunTimeDay();">
+				Day
+			</button>
+			<button
+			class="sun-time sun-time-night"
+			onclick="activateSunTimeNight();">
+				Night
+			</button>
+		</div>
+	</div>
 	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 545.17 250">
 		<defs>
 			<style>

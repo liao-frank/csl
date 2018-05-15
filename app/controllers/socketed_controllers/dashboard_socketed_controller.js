@@ -43,36 +43,40 @@ class DashboardSocketedController extends DashboardController {
 		});
 		// on update
 		socket.on('update_dashboard', (data) => {
-			// authorize
-			let auth = data.auth;
-			if (!auth || !this._authorize(auth.username, auth.password)) {
-				socket.emit('update_dashboard', {
-					dashboard: null,
-					err: 'failed to authorize'
-				});
-				return;
-			}
-			// and..
-			let	category = data.dashboard.category;
-			this._dashboard.updateDashboard(category, data.dashboard, (err, doc) => {
-				// if error occurred, return null widgets
-				if (err || !doc) {
-					socket.emit('update_dashboard', {
-						dashboard: null,
-						err: err
-					});
-				}
-				// else, return widgets and broadcast widgets
-				else {
-					delete doc._id;
-					socket.emit('update_dashboard', {
-						dashboard: doc
-					});
-					socket.broadcast.emit('get_dashboard', {
-						dashboard: doc
-					});
-				}
-			});
+			// // authorize
+			// let auth = data.auth;
+			// if (!auth || !this._authorize(auth.username, auth.password)) {
+			// 	socket.emit('update_dashboard', {
+			// 		dashboard: null,
+			// 		err: 'failed to authorize'
+			// 	});
+			// 	return;
+			// }
+			// // and..
+			// let	category = data.dashboard.category;
+			// this._dashboard.updateDashboard(category, data.dashboard, (err, doc) => {
+			// 	// if error occurred, return null widgets
+			// 	if (err || !doc) {
+			// 		socket.emit('update_dashboard', {
+			// 			dashboard: null,
+			// 			err: err
+			// 		});
+			// 	}
+			// 	// else, return widgets and broadcast widgets
+			// 	else {
+			// 		delete doc._id;
+			// 		socket.emit('update_dashboard', {
+			// 			dashboard: doc
+			// 		});
+			// 		socket.broadcast.emit('get_dashboard', {
+			// 			dashboard: doc
+			// 		});
+			// 	}
+			// });
+			socket.emit('update_dashboard', {
+	 			dashboard: null,
+	 			err: ';)'
+	 		});
 		});
 		// on get data
 		socket.on('get_data', (obj) => {
