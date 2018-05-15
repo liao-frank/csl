@@ -30,22 +30,22 @@
 		<div class="pure-control-group">
 			<label for="label">Label</label>
 			<input id="label" type="text" placeholder="Label"
-				v-bind:value="editing_widget ? editing_widget.label : ''">
+				v-bind:value="Object.keys(editing_widget).length ? editing_widget.label : ''">
 		</div>
 		<div class="pure-control-group">
 			<label for="data_url">Data Url</label>
 			<input id="data_url" type="text" placeholder="Data Url"
-				v-bind:value="editing_widget ? editing_widget.data_url : ''">
+				v-bind:value="Object.keys(editing_widget).length ? editing_widget.data_url : ''">
 		</div>
 		<div class="pure-control-group">
 			<label for="template">Template</label>
 			<textarea id="template" placeholder="Template"
-				v-bind:value="editing_widget ? editing_widget.template : ''"></textarea>
+				v-bind:value="Object.keys(editing_widget).length ? editing_widget.template : '<div></div>'"></textarea>
 		</div>
 		<div class="pure-control-group">
 			<label for="data_handler">Data Handler</label>
 			<textarea id="data_handler" placeholder="Data Handler (function)"
-				v-bind:value="editing_widget ? editing_widget.data_handler : ''"></textarea>
+				v-bind:value="Object.keys(editing_widget).length ? editing_widget.data_handler : ''"></textarea>
 		</div>
 		<div class="pure-control-group">
 			<label>&nbsp;</label>
@@ -162,6 +162,10 @@
 				this.editing_widget = {};
 			},
 			startEdit(widget) {
+				// if empty widget, add <div></div> to template
+				if (!Object.keys(widget).length) {
+					widget.template = '<div></div>';
+				}
 				this.editing_widget = widget;
 			},
 			stopEdit() {

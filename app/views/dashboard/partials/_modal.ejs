@@ -34,7 +34,7 @@
 					$space.empty();
 					content($space);
 				}
-				else if (typeof content == 'string') {
+				else if ((typeof content == 'string') || (content instanceof jQuery)) {
 					let $space = $(this.$el).find('.modal-content');
 					$space.empty();
 					$space.append($(content));

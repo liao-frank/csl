@@ -78,7 +78,7 @@ class Weather {
 	_retrieveSunTimes(callback) {
 		WeatherRecord.find({}, (err, doc) => {
 			if (err) callback(err, null);
-			else callback(null, doc.sun_times);
+			else callback(null, doc && doc.sun_times);
 		});
 	}
 	// updates sun times held in database
@@ -146,7 +146,7 @@ class Weather {
 
 	getHourlyForecast(callback) {
 		// if in memory
-		if (this.weather != undefined) {
+		if (Object.keys(this.weather).length) {
 			let hourly_forecast = this.weather.hourly_forecast;
 			// if valid, callback
 			if (this._checkHourlyForecast(hourly_forecast)) callback(null, hourly_forecast);
@@ -214,7 +214,7 @@ class Weather {
 	// retrieves hourly forecast from the database
 	_retrieveHourlyForecast(callback) {
 		WeatherRecord.find({}, (err, doc) => {
-			callback(err, doc.hourly_forecast);
+			callback(err, doc && doc.hourly_forecast);
 		});
 	}
 	// requests hourly forecast from the internet
@@ -312,36 +312,36 @@ let weather = new Weather();
 // 	console.log(err, hourly_forecast);
 // });
 
-const MLAB_URL = 'mongodb://csl-cmu-webmaster:phippsPowerwise1@ds147668.mlab.com:47668/csl-interface';
-const MONGO_CLIENT = require('mongodb').MongoClient;
-global.mongoDB;
-MONGO_CLIENT.connect(MLAB_URL, function(err, client) {
-	if (err) console.log(err);
-	else {
-		global.mongoDB = client;
-		console.log('connected, testing...');
-		// DATABASE TEST SUITE
-		// should be able to update sun times in the database
-		// weather._updateSunTimes((err, result) => {
-		// 	console.log(err, result);
-		// });
-		// should be able to retrieve sun times from the database
-		// weather._retrieveSunTimes((err, result) => {
-		// 	console.log(err, result);
-		// });
-		// should be able to get sun times
-		// weather.getSunTimes((err, result) => {
-		// 	console.log(err, result);
-		// });
-		// should update hourlyforecast
-		// weather._updateHourlyForecast((err, forecast) => {
-		// 	console.log(err, forecast);
-		// });
-		// should be able to get hourly forecast
-		weather.getHourlyForecast((err, forecast) => {
-			console.log(err, forecast);
-		});
-	}
-});
+// const MLAB_URL = 'mongodb://fliao:fliaophipps@ds119800.mlab.com:19800/phipps-dashboard';
+// const MONGO_CLIENT = require('mongodb').MongoClient;
+// global.mongoDB;
+// MONGO_CLIENT.connect(MLAB_URL, function(err, client) {
+// 	if (err) console.log(err);
+// 	else {
+// 		global.mongoDB = client;
+// 		console.log('connected, testing...');
+// 		// DATABASE TEST SUITE
+// 		// should be able to update sun times in the database
+// 		weather._updateSunTimes((err, result) => {
+// 			console.log(err, result);
+// 		});
+// 		// should be able to retrieve sun times from the database
+// 		// weather._retrieveSunTimes((err, result) => {
+// 		// 	console.log(err, result);
+// 		// });
+// 		// should be able to get sun times
+// 		// weather.getSunTimes((err, result) => {
+// 		// 	console.log(err, result);
+// 		// });
+// 		// should update hourlyforecast
+// 		weather._updateHourlyForecast((err, forecast) => {
+// 			console.log(err, forecast);
+// 		});
+// 		// should be able to get hourly forecast
+// 		// weather.getHourlyForecast((err, forecast) => {
+// 		// 	console.log(err, forecast);
+// 		// });
+// 	}
+// });
 
 module.exports = weather;
