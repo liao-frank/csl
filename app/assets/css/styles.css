@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto|Roboto:300');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto:300,300i');
 body {
 	opacity: 1 !important;
 	position: relative;
@@ -179,7 +179,7 @@ button {
 .lock {
 	position: absolute;
 	z-index: 1;
-	top: 10px; right: 5px;
+	top: 12px; right: 5px;
 	width: 24px; height: 21px;
 	border: 3px solid #fff;
 	border-radius: 5px;
