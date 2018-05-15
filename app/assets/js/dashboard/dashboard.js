@@ -72,7 +72,7 @@ let auth = {
 			$category_links.removeClass('active');
 			$this.addClass('active');
 			// request new widgets
-			// requestDashboard(current_category);
+			requestDashboard(current_category);
 		});
 		// edit mode
 		$('.lock').on('click', function() {
@@ -319,12 +319,12 @@ function generateDemoIntro() {
 	<div class="intro">
 		<h2 class="header">Hello there 😊</h2>
 		<p>
-			Welcome to the demo version of <a href="https://devpost.com/software/phipps-dashboard" target="_blank">the dashboard</a>. Feel free to explore the systems and their interactions. Note* the dashboard was built for a standalone tablet system and is otherwise not responsive. Please view on a desktop or horizontal tablet.
+			Welcome to the demo version of the <a href="https://devpost.com/software/phipps-dashboard" target="_blank">CSL dashboard</a>. Feel free to explore the systems and their interactions. Note* the dashboard was built for a standalone tablet system and is otherwise not responsive. Please view on a desktop or horizontal tablet.
 		</p>
 		<h3 class="header">Highlights</h3>
 		<ul>
-			<li>Try out the dynamic background/theme. In this demo, you can select different times and weather patterns near the CSL graphic.</li>
-			<li>See how the widget system works. Log in with the 'lock' icon in the upper right corner with <em>(admin : secret)</em>. Widgets are editable and extensible.</li>
+			<li>See how the dynamic background/theme automatically updates with weather and time. For this demo, you can manually set these attributes near the CSL graphic.</li>
+			<li>Examine how the editable, extensible widgets work. Log in with the 'lock' icon in the upper right corner with <em>(admin : secret)</em>. Updates disabled in demo.</li>
 			<li>Notice the custom toast/alert system throughout your interactions. It was built as part of the CMS.</li>
 		</ul>
 		<span class="signature">Frank Liao</span>
